@@ -1,4 +1,4 @@
-class Cells:
+class Cell:
 	
 	def __init__(self,cellno,description,action="",artifact=""):
 		self.cellno = cellno

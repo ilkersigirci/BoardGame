@@ -1,5 +1,5 @@
 import json
-import Cells
+import Cell
 
 
 class Game:
@@ -22,7 +22,7 @@ class Game:
 			artifact = ""
 			if "artifact" in cell: artifact = cell["artifact"]
 			
-			self.cells.append(Cells.Cells(cell["cellno"], cell["description"], action, artifact))
+			self.cells.append(Cell.Cell(cell["cellno"], cell["description"], action, artifact))
 
 
 
