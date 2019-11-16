@@ -2,6 +2,8 @@ import json
 from Cell import Cell
 from Player import Player
 import threading as th
+import random
+import string
 
 class Game:
 
@@ -14,13 +16,21 @@ class Game:
 		self.name = self.gameJson["name"]
 		self.dice = self.gameJson["dice"]
 		self.cycles = self.gameJson["cycles"]
-		self.termination = self.gameJson["termination"]
+		self.credit = self.gameJson["credit"]
 		# self.cards = self.gameJson["cards"]
 		self.currRound = 0
 		self.cells = []
-		self.players = {}
-		self.lock = th.Lock()		
-
+		self.players = []
+		self.lock = th.Lock()
+		self.conditionStr = None
+		self.conditionVal = 0
+		self.currPlayer = Player(0,"None")
+		if(isinstance(self.gameJson["termination"],dict)):
+			for key,value in self.termination.items():
+				self.conditionStr = key
+				self.conditionVal = value	
+		else:
+			self.conditionStr = gameJson["termination"]
 		for cell in self.gameJson["cells"]:
 			action = ""
 			if "action" in cell: action = cell["action"]
@@ -28,7 +38,7 @@ class Game:
 			artifact = ""
 			if "artifact" in cell: artifact = cell["artifact"]
 			
-			self.cells.append(Cell.Cell(cell["cellno"], cell["description"], action, artifact))
+			self.cells.append(Cell(cell["cellno"], cell["description"], action, artifact))
 	
 	def state(self):
 		playerPositions = []
@@ -37,19 +47,82 @@ class Game:
 		return {
 			
 		}
-
-	def notifyPlayer(self, player, method):
+	def join(self,player):
+		if isinstance(player, Player) == False:
+			raise Exception("Player is not valid.")
+		with self.lock:
+			if player in self.players:
+				raise Exception("This player has already joined.")
+			self.players.append(player)
 		
+	def ready(self, player):
+		print("selam")
+
+	def next(self, player):
+		while(player != self.currPlayer):	continue
+
+		if(player.skipLeftRound != 0):
+			player.skipLeftRound -= 1
+			
+
+		elif(player.currType == "roll"):
+        	currentMove = random.randrange(self.dice + 1)
+			player.cellNo += currentMove
+			action = self.cells[cellNo].action 
+			# artifact= self.cells[cellNo].artifact 
+
+			actionKey = list(action.keys())[0]
+			actionValue = list(action.values())[0]
+
+			if(actionKey == "skip"):
+				player.skipLeftRound += 1
+			
+			elif(actionKey == "drop"):
+				player.credit += actionValue
+			
+			elif(actionKey == "drawcard"):
+				pass
+
+			elif(actionKey == "jump"):
+				if(actionValue[0] == "="):
+					#TODO: absolute location
+				else:
+					player.cellNo += actionValue
+
+			elif(player.currType == "drawcard") pass
+			elif(player.currType == "artifact") pass
+		
+		return{
+		#TODO: player state change
+			"move": currentMove
+		}
+
+
+	def notifyPlayer(self):
+		if(self.conditionStr == "firstcollect"):
+			pass
+		elif (self.conditionStr == "round"):
+			if self.conditionVal == self.currRound:
+				pass # termination here
+		elif self.conditionStr == "finish":
+			pass
+		elif self.conditionStr == "firstbroke":
+			pass
+
 		if isinstance(player, Player) == False:
 			raise ValueError("Player is not valid.")
 
-		if method != Player.turn():
-			raise ValueError("Invalid notify method")
-
-		with self.lock:
-			
-
+		if(self.cycles == True){
+			for player in self.players:
+				player.turn("roll")
+		}
 
 
-""" cell = Cells.Cells(4,"onur")
-print(cell.description) """
+		for player in self.players:
+			player.turn("roll")
+
+		playerCount = len(self.players)
+
+		for i in range(0,playerCount):
+			self.currPlayer = self.players[i]
+			(self.players[i]).turn("roll")

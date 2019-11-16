@@ -16,7 +16,7 @@ class ItemState(Enum):
 
 class User:
 
-    def _validation_decorator(method):
+    def _validation_decorator(self,method):
         def validate(*args):
             if args[0].verified:
                 return method(*args)
