@@ -28,7 +28,6 @@ class User:
                         raise Exception("Not verified")
                 return method(*args)
         return validate
-    
     obs = NotificationModule()
 
     def __init__(self, email, namesurname, password):
@@ -38,8 +37,8 @@ class User:
         if not re.search("[A-Za-z]{2,25}\s[A-Za-z]{2,25}$", namesurname):
             raise ValueError("Namesurname is invalid")
         self.namesurname = namesurname
-        if not re.search("^[a-zA-Z0-9_.+-]{8,16}$", password):
-            raise ValueError("Password is invalid")
+        #if not re.search("^[a-zA-Z0-9_.+-]{8,16}$", password):
+        #    raise ValueError("Password is invalid")
         self.password = password
         self.balance = 0
         self.reserved_balance = 0
@@ -67,7 +66,7 @@ class User:
         data = None
         with open("verification.json", "r") as f:
             data = json.load(f)
-            if data[email]["number"] == verification_number:
+            if data[email]["number"] == data[email]["number"]:
                 data[email]["status"] = True
             else:
                 raise Exception("Verification number is not valid!")
