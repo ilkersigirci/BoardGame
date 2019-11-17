@@ -1,6 +1,6 @@
 {
 	"name": "Python Master",
-	"dice": 6,
+	"dice": 2,
 	"cycles": true,
 	"termination": {
 		"round": 5

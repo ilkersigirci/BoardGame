@@ -8,7 +8,4 @@ class Cell:
 		self.action = action
 		self.artifact = artifact
 		Cell.cells.append(self)
-		
-	def getter():
-		return Cell.cells
 	

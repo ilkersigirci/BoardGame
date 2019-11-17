@@ -8,6 +8,7 @@ import string
 class Game:
 
 	games = []
+	notifyLock = th.Lock()
 	
 	def __init__(self,path):
 		with open(path) as file:
@@ -22,20 +23,23 @@ class Game:
 		self.cells = []
 		self.players = []
 		self.lock = th.Lock()
-		self.conditionStr = None
-		self.conditionVal = 0
-		self.currPlayer = Player(0,"None")
+		self.terminationStr = None
+		self.terminationVal = 0
+		self.currPlayer = None
+		self.readyPlayerCount = 0 #to check whether there is a ready player in the game or not
 		if(isinstance(self.gameJson["termination"],dict)):
-			for key,value in self.termination.items():
-				self.conditionStr = key
-				self.conditionVal = value	
-		else:
-			self.conditionStr = gameJson["termination"]
-		for cell in self.gameJson["cells"]:
-			action = ""
-			if "action" in cell: action = cell["action"]
+			self.terminationStr = list(self.gameJson["termination"].keys())[0]
+			self.terminationVal = list(self.gameJson["termination"].values())[0]
 
-			artifact = ""
+		else:
+			self.terminationStr = self.gameJson["termination"]
+
+		for cell in self.gameJson["cells"]:
+			action = None
+			if "action" in cell:
+				action = cell["action"]
+
+			artifact = None
 			if "artifact" in cell: artifact = cell["artifact"]
 			
 			self.cells.append(Cell(cell["cellno"], cell["description"], action, artifact))
@@ -53,78 +57,127 @@ class Game:
 		with self.lock:
 			if player in self.players:
 				raise Exception("This player has already joined.")
+			elif self.readyPlayerCount >0:
+				raise Exception("The game is about to start, you are late!")
 			self.players.append(player)
 		
 	def ready(self, player):
-		print("selam")
+		self.readyPlayerCount += 1
+		if self.readyPlayerCount == len(self.players):
+			print("game is starting")
+			self.notifyPlayer()
 
+	def listgames(self):
+		print("list games")
+		for game in games:
+			print(game.state())
+	
 	def next(self, player):
-		while(player != self.currPlayer):	continue
+		#while(player != self.currPlayer):	continue
 
+		stateChange = []
 		if(player.skipLeftRound != 0):
 			player.skipLeftRound -= 1
 			
 
 		elif(player.currType == "roll"):
 			currentMove = random.randrange(self.dice + 1)
-			player.cellNo += currentMove
-			action = self.cells[player.cellNo].action 
+			tempCell = player.cellNo + currentMove
+			
+			if tempCell > len(self.cells):
+				if(self.cycles):
+					if(self.terminationStr == "round"):
+						tempCell = tempCell % len(self.cells)
+						player.playerCycle += 1
+				else:
+					if(self.terminationStr == "finish"):
+						tempCell = len(self.cells) - 1
+						print("Game should be ended")
+				player.cellNo = tempCell
+
+			action = self.cells[player.cellNo].action
+			print("Player {} at cellno: {} action is {}".format(player.nickname, tempCell,action))
+			if action is None:
+				print("No action specified")
+				return stateChange
 			# artifact= self.cells[cellNo].artifact 
+			stateChange.append({"move": currentMove})
 
 			actionKey = list(action.keys())[0]
 			actionValue = list(action.values())[0]
+			print(actionValue)
 
 			if(actionKey == "skip"):
-				player.skipLeftRound += 1
+				player.skipLeftRound += actionValue
+				stateChange.append({"skip": actionValue})
 			
 			elif(actionKey == "drop"):
-				player.credit += actionValue
+				player.credit -= actionValue # check
+				stateChange.append({"drop": actionValue})
 			
 			elif(actionKey == "drawcard"):
 				pass
 
 			elif(actionKey == "jump"):
-				if(actionValue[0] == "="):
+				if(isinstance(actionValue[0],str)):
 					#TODO: absolute location
-					print("dummy output")
+					print("Absolute jump, but not implemented")
 				else:
 					player.cellNo += actionValue
+					
+				stateChange.append({"jump": actionValue})
 
-			elif(player.currType == "drawcard"):
-				pass
 			elif(player.currType == "artifact"): 
 				pass
-		
-		return{
-		#TODO: player state change
-			"move": currentMove
-		}
-
+		print(stateChange)
+		return stateChange
 
 	def notifyPlayer(self):
-		if(self.conditionStr == "firstcollect"):
-			pass
-		elif (self.conditionStr == "round"):
-			if self.conditionVal == self.currRound:
-				pass # termination here
-		elif self.conditionStr == "finish":
-			pass
-		elif self.conditionStr == "firstbroke":
-			pass
+		
+		#if(self.terminationStr == "firstcollect"):
+		#	pass
+		#elif (self.terminationStr == "round"):
+		#	if self.terminationVal == self.currRound:
+		#		pass # termination here
+		#elif self.terminationStr == "finish":
+		#	pass
+		#elif self.terminationStr == "firstbroke":
+		#	pass
 
 		#if isinstance(player, Player) == False:
 		#	raise ValueError("Player is not valid.")
 
-		if(self.cycles == True):
-			for player in self.players:
-				player.turn("roll")
+		#if(self.cycles == True):
+		#	for player in self.players:
+		#		player.turn("roll")
 
 
-		for player in self.players:
-			player.turn("roll")
+		#for player in self.players:
+		#	player.turn("roll")
+
+		if(self.terminationStr != "round"):
+			print("Termination must be round for phase 1")
 
 		playerCount = len(self.players)
+		playerIndex = 0
+		while(self.currRound != self.terminationVal):
+			self.currPlayer = self.players[playerIndex]
+			if self.currPlayer.currType == None:
+				(self.players[playerIndex]).turn("roll")
+			if self.currPlayer.currType == "roll":
+				self.currPlayer.currType = None
+				if playerIndex == playerCount-1:
+					playerIndex = 0
+					self.currRound += 1
+					print("Round: {} ended".format(self.currRound))
+				#
+				#cellIndex = self.currPlayer.cellNo
+				#if self.cells[cellIndex].action == "drawcard":
+				#	self.currPlayer.turn("drawcard")
+				#elif self.cells[cellIndex].action == "choice":
+				#	self.currPlayer.turn("choice")
+				#self.currPlayer.currType = None
+			playerIndex += 1
 
-		for i in range(0,playerCount):
-			self.currPlayer = self.players[i]
-			(self.players[i]).turn("roll")
+
+
