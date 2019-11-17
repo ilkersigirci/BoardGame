@@ -1,6 +1,10 @@
+import json
+result = {"cells":[],"players":[]}
+#result = {}
+#result["cells"] = {}
+#esult["cell_desp"].add({"cellNo":3,"cellDescription":2})
+result["cells"].append({"cellNo":3,"cellDescription":2})
+result["cells"].append({"cellNo":2,"cellDescription":3})
+#result["cells"]["cell2"] = {"cellNo":2,"cellDescription":3}
 
-sizeof = 4
-for i in range(0,sizeof):
-    if i == sizeof-1:
-        i = 0
-    print(i)
+print(json.dumps(result, indent = 4))

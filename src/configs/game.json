@@ -1,0 +1,62 @@
+{
+	"name": "Python Master2",
+	"dice": 4,
+	"cycles": true,
+	"termination": {
+		"round": 3
+	},
+	"cells": [
+		{
+			"cellno": 0,
+			"description": "Start"
+		}, 
+		{
+			"cellno": 1,
+			"description": ""
+		},
+		{
+			"cellno": 2,
+			"description": "Bug",
+			"action": {
+				"skip": 3
+			}
+		}, 
+		{
+			"cellno": 3,
+			"description": "New version",
+			"action": {
+				"jump": 3
+			}
+		}, 
+		{
+			"cellno": 4,
+			"description": "Runtime error",
+			"action": {
+				"jump": "=0"
+			}
+		}, 
+		{
+			"cellno": 5,
+			"description": ""
+		}, 
+		{
+			"cellno": 6,
+			"description": "New IDE",
+			"artifact": {
+				"name": "ide",
+				"owned": false,
+				"price": 0,
+				"action": {
+					"skip": 1
+				}
+			}
+		}, 
+		{
+			"cellno": 7,
+			"description": ""
+		}
+	],
+
+	"cards": [],
+	"credit": 100
+}

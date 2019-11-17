@@ -6,7 +6,6 @@ class Player:
     def __init__(self, id, nickname):
         self.nickname = nickname
         self.id = id
-        self.CurrentCredit = 0 # init deger verilcek mi
         self.currentGame = None
         self.cellNo = 0
         self.playerCycle = 0
@@ -44,5 +43,6 @@ class Player:
             raise Exception("Player needs to join the game before turn command")
         if type == "roll":
             self.currType = type
-            state = self.currentGame.next(self)
-        
+            stateChange = self.currentGame.next(self)
+            print(stateChange)
+            #print(json.dumps(stateChange, indent = 2))
