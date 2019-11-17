@@ -66,9 +66,9 @@ class Game:
 			
 
 		elif(player.currType == "roll"):
-        	currentMove = random.randrange(self.dice + 1)
+			currentMove = random.randrange(self.dice + 1)
 			player.cellNo += currentMove
-			action = self.cells[cellNo].action 
+			action = self.cells[player.cellNo].action 
 			# artifact= self.cells[cellNo].artifact 
 
 			actionKey = list(action.keys())[0]
@@ -86,11 +86,14 @@ class Game:
 			elif(actionKey == "jump"):
 				if(actionValue[0] == "="):
 					#TODO: absolute location
+					print("dummy output")
 				else:
 					player.cellNo += actionValue
 
-			elif(player.currType == "drawcard") pass
-			elif(player.currType == "artifact") pass
+			elif(player.currType == "drawcard"):
+				pass
+			elif(player.currType == "artifact"): 
+				pass
 		
 		return{
 		#TODO: player state change
@@ -109,13 +112,12 @@ class Game:
 		elif self.conditionStr == "firstbroke":
 			pass
 
-		if isinstance(player, Player) == False:
-			raise ValueError("Player is not valid.")
+		#if isinstance(player, Player) == False:
+		#	raise ValueError("Player is not valid.")
 
-		if(self.cycles == True){
+		if(self.cycles == True):
 			for player in self.players:
 				player.turn("roll")
-		}
 
 
 		for player in self.players:
