@@ -1,5 +1,6 @@
 import json
 from Cell import Cell
+from Cell import Artifact
 
 
 class Player:
@@ -36,13 +37,39 @@ class Player:
 
     def turn(self,type):
 
-        if(type != "roll"):
-            raise Exception("Only roll type is acceptable for this phase")
         
         if(self.currentGame == None):
             raise Exception("Player needs to join the game before turn command")
+
+        
+
         if type == "roll":
             self.currType = type
             stateChange = self.currentGame.next(self)
             print(stateChange)
             #print(json.dumps(stateChange, indent = 2))
+
+        elif type == "drawcard":
+            self.currType = type
+            stateChange = self.currentGame.next(self)
+            print(stateChange)
+            #print(json.dumps(stateChange, indent = 2))
+
+
+        if(isinstance(type, Artifact)): #FIXME: type nasil gelecek?  Artifact olarak mi string olarak mi?
+            self.currType = "artifactDesc" #TODO: degisecek bu ad
+            if(type.price >= 0 and self.credit >= type.price):
+                self.currentGame.pick(self, True)
+            else:
+                self.currentGame.pick(self, False)
+
+
+"""
+pick(True):
+if price > 0 and user.credit >= price, price is dropped from users credit, and
+if action is specified, action is taken on behalf of user.
+if artifact is owned user becomes the owner of the artifact. Otherwise artifact simply disappears from the board.
+
+pick(False):
+Artifact is left in the board as it is.
+"""
