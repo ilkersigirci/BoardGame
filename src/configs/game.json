@@ -3,13 +3,13 @@
 	"dice": 4,
 	"cycles": true,
 	"termination": {
-		"round": 3
+		"round": 4
 	},
 	"cells": [
 		{
 			"cellno": 0,
 			"description": "Start"
-		}, 
+		},
 		{
 			"cellno": 1,
 			"description": ""
@@ -20,25 +20,25 @@
 			"action": {
 				"skip": 3
 			}
-		}, 
+		},
 		{
 			"cellno": 3,
 			"description": "New version",
 			"action": {
 				"jump": 3
 			}
-		}, 
+		},
 		{
 			"cellno": 4,
 			"description": "Runtime error",
 			"action": {
 				"jump": "=0"
 			}
-		}, 
+		},
 		{
 			"cellno": 5,
 			"description": ""
-		}, 
+		},
 		{
 			"cellno": 6,
 			"description": "New IDE",
@@ -50,13 +50,132 @@
 					"skip": 1
 				}
 			}
-		}, 
+		},
 		{
 			"cellno": 7,
 			"description": ""
 		}
 	],
 
-	"cards": [],
+	"cards": [
+		{
+			"action": {
+				"skip": 1
+			}
+		}, {
+			"action": {
+				"skip": 2
+			}
+		}, {
+			"action": {
+				"skip": 3
+			}
+		}, {
+			"action": {
+				"jump": "=0"
+			}
+		}, {
+			"action": {
+				"jump": "=2"
+			}
+		}, {
+			"action": {
+				"jump": "=4"
+			}
+		}, {
+			"action": {
+				"jump": "=6"
+			}
+		}, {
+			"action": {
+				"jump": -5
+			}
+		}, {
+			"action": {
+				"jump": 5
+			}
+		}, {
+			"action": {
+				"jump": -3
+			}
+		}, {
+			"action": {
+				"jump": 3
+			}
+		}, {
+			"action": {
+				"pay": [10, 25]
+			}
+		}, {
+			"action": {
+				"pay": [11, 25]
+			}
+		}, {
+			"action": {
+				"pay": [12, 25]
+			}
+		}, {
+			"action": {
+				"pay": [13, 25]
+			}
+		}, {
+			"action": {
+				"pay": [14, 25]
+			}
+		}, {
+			"action": {
+				"pay": [15, 25]
+			}
+		}, {
+			"action": {
+				"pay": [16, 25]
+			}
+		}, {
+			"action": {
+				"pay": [17, 25]
+			}
+		}, {
+			"action": {
+				"pay": [18, 25]
+			}
+		}, {
+			"action": {
+				"pay": [19, 25]
+			}
+		}, {
+			"action": {
+				"pay": [19, 25]
+			}
+		}, {
+			"action": {
+				"skip": 3
+			}
+		}, {
+			"action": {
+				"skip": 3
+			}
+		}, {
+			"action": {
+				"skip": 3
+			}
+		}, {
+			"action": {
+				"skip": 3
+			}
+		}, {
+			"action": {
+				"skip": 3
+			}
+		}, {
+			"action": {
+				"skip": 3
+			}
+		}, {
+			"action": {
+				"skip": 3
+			}
+		}
+
+	],
 	"credit": 100
 }

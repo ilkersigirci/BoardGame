@@ -3,7 +3,6 @@ from Cell import Cell
 from Player import Player
 import threading as th
 import random
-import string
 
 class Game:
 
@@ -18,36 +17,110 @@ class Game:
 		self.dice = self.gameJson["dice"]
 		self.cycles = self.gameJson["cycles"]
 		self.credit = self.gameJson["credit"]
-		# self.cards = self.gameJson["cards"]
+		self.cards = self.gameJson["cards"]
 		self.currRound = 0
 		self.cells = []
 		self.players = []
 		self.lock = th.Lock()
-		self.terminationStr = None
-		self.terminationVal = 0
 		self.currPlayer = None
 		self.readyPlayerCount = 0 #to check whether there is a ready player in the game or not
-		self.gameState = 0 #0 oyun bitmeden 1 oyun bitince simdilik
-		self.maxCurCycle = 0
-		if(isinstance(self.gameJson["termination"],dict)):
-			self.terminationStr = list(self.gameJson["termination"].keys())[0]
-			self.terminationVal = list(self.gameJson["termination"].values())[0]
+		self.isGameEnd = False # False oyun devam ediyor / True oyun bitince
 
-		else:
-			self.terminationStr = self.gameJson["termination"]
 
+		self.terminationStr, self.terminationVal = self._parseTermination(self.gameJson["termination"])
+		
 		for cell in self.gameJson["cells"]:
-			action = None
-			if "action" in cell:
-				action = cell["action"]
+			parsedCell = self._parseCell(cell)
+			self.cells.append(parsedCell)
 
-			artifact = None
-			if "artifact" in cell: artifact = cell["artifact"]
-			
-			self.cells.append(Cell(cell["cellno"], cell["description"], action, artifact))
 		self.cellCount = len(self.cells)
 		Game.games.append(self)
 
+########################################################################################################
+	def _parseTermination(self, termination):
+
+		if(isinstance(self.gameJson["termination"],dict)):
+			return list(termination.keys())[0], list(termination.values())[0]
+
+		else:
+			return self.gameJson["termination"] , None
+
+	def _parseCell(self, cell):
+
+		action = ""
+		artifact = ""
+
+		if "action" in cell: action = cell["action"]
+		if "artifact" in cell: artifact = cell["artifact"]
+		
+		return Cell(cell["cellno"], cell["description"], action, artifact)
+
+	def _isGameEnded(self, player):
+
+		if(self.terminationStr == "round"): # Cycle is true
+			if player.playerCycle >= self.terminationVal:
+				self.isGameEnd = 1
+
+		elif(self.terminationStr == "finish"): # Cycle is false
+			if player.cellNo == self.cellCount - 1:
+				self.isGameEnd = 1
+
+		elif(self.terminationStr == "firstbroke"):
+			if player.credit <= 0:
+				self.isGameEnd = 1
+
+		elif(self.terminationStr == "firstcollect"):
+			if len(player.artifacts) >= self.terminationVal:
+				self.isGameEnd = 1
+
+
+	def _takeAction(self, action, player):
+
+		actionChange = None
+		actionKey = list(action.keys())[0]
+		actionValue = list(action.values())[0]	
+
+		if(actionKey == "skip"):
+			player.skipLeftRound += actionValue
+			actionChange = {"skip": actionValue}
+		elif(actionKey == "drop"):
+			player.credit -= actionValue # check
+			actionChange = {"drop": actionValue}
+		elif(actionKey == "add"):
+			player.credit += actionValue # check
+			actionChange = {"add": actionValue}
+		elif(actionKey == "pay"):
+			self.players[actionValue[0]].credit += actionValue[1]
+			player.credit -= actionValue[1] # check
+			actionChange = {"pay": actionValue} 
+
+		elif(actionKey == "jump"):
+			if(isinstance(actionValue,str)): # Absolute Jump
+				#print("absolute jump")
+				actionValue = int(actionValue[1:])
+				player.cellNo = actionValue
+				actionChange = {"jump absolute =": actionValue,"current cell":player.cellNo}
+			else:
+				player.cellNo += actionValue
+				if self.cycles == True:
+					if player.cellNo >= self.cellCount:
+						player.cellNo %= self.cellCount
+						player.playerCycle += 1
+					elif player.cellNo <0:
+						player.cellNo %= self.cellCount
+						player.playerCycle -= 1
+				elif player.cellNo >= self.cellCount:
+					player.cellNo = self.cellCount-1
+				actionChange = {"jump relative": actionValue,"current cell":player.cellNo}
+		
+		elif(actionKey == "drawcard"):
+			
+		# Check if the game is ended
+		self._isGameEnded(player)
+		
+		return actionChange
+
+########################################################################################################
 	def state(self):
 		result = {"name":self.name, "cell":[],"player":[]}
 		for cell in self.cells:
@@ -56,8 +129,6 @@ class Game:
 			result["player"].append({"player":player.nickname,"credit":player.credit,"cycle":player.playerCycle, "cell":player.cellNo, "skip":player.skipLeftRound})
 		return result
 		
-		
-
 	def join(self,player):
 		if isinstance(player, Player) == False:
 			raise Exception("Player is not valid.")
@@ -81,6 +152,7 @@ class Game:
 			print("Game name: {}, dice: {}, termination: {}, cycles: {}, initialCredit: {}, playerCount: {}"
 					.format(game.name, game.dice, game.terminationStr, game.cycles, game.credit, len(game.players)))
 			print(json.dumps(game.state(), indent = 2))
+
 	
 	def next(self, player):
 
@@ -89,109 +161,56 @@ class Game:
 		if(player.skipLeftRound != 0):
 			stateChange["actions"].append({"skip": player.skipLeftRound})
 			player.skipLeftRound -= 1
-			return stateChange
-			
-			
+			return stateChange			
 
 		elif(player.currType == "roll"):
 			diceRoll = random.randrange(self.dice) + 1
-			tempCell = player.cellNo + diceRoll
-			
-			if tempCell >= self.cellCount:
-				if(self.cycles):
-					tempCell = tempCell % self.cellCount
-					player.playerCycle += 1
-					if player.playerCycle > self.maxCurCycle:
-						self.maxCurCycle = player.playerCycle
-						if self.terminationStr == "round" and self.maxCurCycle == self.terminationVal:
-							self.gameState = 1	
-				else:
-					if(self.terminationStr == "finish"):
-						tempCell = self.cellCount - 1
-						self.gameState = 1
-						
-						print("Game should be ended")
-
-			player.cellNo = tempCell
-
-			stateChange["actions"].append({"dice roll ": diceRoll,"current cell":player.cellNo})
-			#print("Player {} rolled the dice as {} and moved to cellNo: {}".format(player.nickname, diceRoll, tempCell))
-			#stateChange.append({"dice roll": diceRoll})
-
+			stateChange["actions"].append({"dice roll ": diceRoll})
+			takeActionStateChange = self._takeAction({"jump": diceRoll}, player)
+			stateChange["actions"].append(takeActionStateChange)	#TODO: json formatina yakinlastir
+			if self.isGameEnd  == True:
+				return stateChange
+				
 			action = self.cells[player.cellNo].action
 			#print("Player {} at cellno: {} action is {}".format(player.nickname, tempCell,action))
-			if action is None:
-				stateChange["actions"].append({"No action in cell:":player.cellNo})
+			if action == "": #  or action == None or action == ""
+				#print("There is no action in the cell -- NEXT")
+				stateChange["actions"].append({"There is no action in the cell:":player.cellNo})
 				return stateChange
-			# artifact= self.cells[cellNo].artifact 
-			
 
-			actionKey = list(action.keys())[0]
-			actionValue = list(action.values())[0]
+			takeActionStateChange = self._takeAction(action, player)
+			stateChange["actions"].append(takeActionStateChange)
+			if self.isGameEnd  == True:
+				return stateChange				
 
-			
-
-			if(actionKey == "skip"):
-				player.skipLeftRound += actionValue
-				stateChange["actions"].append({"skip": actionValue})
-			
-			elif(actionKey == "drop"):
-				player.credit -= actionValue # check
-				stateChange["actions"].append({"drop": actionValue})
-				if player.credit <= 0 and self.terminationStr == "firstbroke":
-					self.gameState = 1
-			elif(actionKey == "add"):
-				player.credit += actionValue # check
-				stateChange["actions"].append({"drop": actionValue})
-			elif(actionKey == "pay"):
-				self.players[actionValue[0]].credit += actionValue[1]
-				player.credit -= actionValue[1] # check
-				stateChange["actions"].append({"drop": actionValue})
-				if player.credit <= 0 and self.terminationStr == "firstbroke":
-					self.gameState = 1
-			
-			elif(actionKey == "drawcard"):
-				pass
-
-			elif(actionKey == "jump"):
-				if(isinstance(actionValue,str)): # Absolute Jump
-					#print("absolute jump")
-					actionValue = int(actionValue[1:])
-					player.cellNo = actionValue
-					stateChange["actions"].append({"jump absolute =": actionValue,"current cell":player.cellNo})
-				else:
-					player.cellNo += actionValue
-					if player.cellNo >= self.cellCount:
-						if self.cycles == True:
-							player.cellNo %= self.cellCount 
-						else:
-							player.cellNo = self.cellCount-1
-							self.gameState = 1
-					stateChange["actions"].append({"jump relative": actionValue,"current cell":player.cellNo})
-					
-				
-
-			elif(player.currType == "artifact"):
-				pass
+		elif(player.currType == "drawcard"):
+			pickedCard = random.choice(self.cards)
+			pickedCardKey = list(pickedCard.keys())[0]
+			pickedCardValue = list(pickedCard.values())[0]
+			stateChange["actions"].append({"draw card with action of": (pickedCardKey,pickedCardValue)})
+			takeActionStateChange = self._takeAction(pickedCard, player)
+			stateChange["actions"].append(takeActionStateChange)
+			if self.isGameEnd  == True:
+				return stateChange
 
 		return stateChange
 
-	def notifyPlayer(self):
+	def notifyPlayer(self): #TODO: Cycle sayi ise herkese tur basinda ekle
 		
 		if(self.terminationStr == "firstcollect"):
 			pass
 
-		playerCount = len(self.players)
 		playerIndex = 0
-		while(self.gameState == 0):
+		while(self.isGameEnd == False):
 			self.currPlayer = self.players[playerIndex]
 			if self.currPlayer.currType == None:
 				(self.players[playerIndex]).turn("roll")
 			if self.currPlayer.currType == "roll":
+				
 				self.currPlayer.currType = None
 			playerIndex += 1
 
-			if playerIndex == playerCount:
+			if playerIndex == len(self.players):
 				playerIndex = 0
 				self.currRound += 1
 				
@@ -200,3 +219,36 @@ class Game:
 				
 		print("-------------------Game: ended------------------")
 		print(json.dumps(self.state(), indent = 2))
+
+
+	def pick(self, player, pickbool):
+		playerCell = self.cells[player.cellNo]
+		stateChange = {"player":player.nickname,"cellNo":player.cellNo,"pick":pickbool, "actions":[]}
+
+		if pickbool == True:
+			if(playerCell.artifact.owned == True):
+				stateChange["actions"].append({"message": "Artifact can't be selected, it is already owned"})
+				return
+
+			if(playerCell.artifact.price >= 0 and player.credit >= playerCell.artifact.price): # Owned artifact
+				stateChange["actions"].append({"message":"Artifact is owned"})
+				playerCell.artifact.owned = True
+				player.artifacts.append(playerCell.artifact)
+				action = playerCell.artifact.action
+				if action == "": # action is None or action == None or 
+					print("There is no action in the cell -- PICK")
+					stateChange["actions"].append({"message":"There is no action in the artifact"})
+				else:
+					takeActionStateChange = self._takeAction(player, action)
+					stateChange["actions"].append(takeActionStateChange)
+					if self.isGameEnd  == True:
+						return stateChange
+			else:
+				stateChange["actions"].append({"message":"Artifact can't be owned"})
+				self.cells[player.cellNo].artifact = None #TODO: olmazsa del yapariz			
+
+		else:   # don't change anything in this case
+			pass
+
+		print(stateChange)
+		#print(json.dumps(stateChange, indent = 2))

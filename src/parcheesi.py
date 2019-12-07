@@ -13,7 +13,7 @@ def parcheesi():
     player6 = Player(2,"emine1")
 
 
-    newgame = Game("configs/gameFinish.json")
+    newgame = Game("configs/game.json")
 
     # Working Game Example
     player1.join(newgame)
@@ -23,7 +23,7 @@ def parcheesi():
     player2.ready()
     player3.ready()
 
-    # User Case 1   -> Try to join after a player declares ready
+"""     # User Case 1   -> Try to join after a player declares ready
     player1.join(newgame)
     player2.join(newgame)
     player1.ready()
@@ -48,7 +48,7 @@ def parcheesi():
     player5.ready()
     player6.ready()
 
-    Game.listgames()
+    Game.listgames() """
     
 
 

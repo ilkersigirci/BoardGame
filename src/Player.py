@@ -1,6 +1,7 @@
 import json
 from Cell import Cell
 from Cell import Artifact
+import random
 
 
 class Player:
@@ -13,6 +14,7 @@ class Player:
         self.skipLeftRound = 0
         self.currType = None
         self.credit = 0
+        self.artifacts = []
         print("user "+ self.nickname + " created!")
     def join(self,game):
         
@@ -52,19 +54,16 @@ class Player:
         elif type == "drawcard":
             self.currType = type
             stateChange = self.currentGame.next(self)
-            print(stateChange)
-            #print(json.dumps(stateChange, indent = 2))
 
 
         if(isinstance(type, Artifact)): #FIXME: type nasil gelecek?  Artifact olarak mi string olarak mi?
-            self.currType = "artifactDesc" #TODO: degisecek bu ad
-            if(type.price >= 0 and self.credit >= type.price):
-                self.currentGame.pick(self, True)
-            else:
-                self.currentGame.pick(self, False)
-
+            self.currType = "artifact" #TODO: degisecek bu ad
+            respond = [True, False]
+            self.currentGame.pick(self, random.choice(respond))
 
 """
+When a user enters a cell with artifact, s/he is given the turn(choice('Artifact Descr')).
+User responds:
 pick(True):
 if price > 0 and user.credit >= price, price is dropped from users credit, and
 if action is specified, action is taken on behalf of user.
