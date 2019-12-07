@@ -4,11 +4,11 @@ from socket import *
 from threading import Thread
 import os,stat
 
-def testClient(n, port):
+def testClient(n, socket):
     # send n random request
     # the connection is kept alive until client closes it.
-    c = socket(AF_INET, SOCK_STREAM)
-    c.connect(('127.0.0.1', port))
+    #c = socket(AF_INET, SOCK_STREAM)
+    #c.connect(('127.0.0.1', port))
     print("Connected...")
     while True:
         print("please write your command")
@@ -22,6 +22,8 @@ def testClient(n, port):
         
     c.close()
 
+
+c = socket(AF_INET, SOCK_STREAM)
 
 clients = [Thread(target = client, args=(5, 20446)) for i in range(5)]
 # start clients

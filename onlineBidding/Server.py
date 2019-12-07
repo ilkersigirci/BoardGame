@@ -27,12 +27,12 @@ class Agent(Thread):
 
     def register(self, req):
         with self.lock:
-            self.current_user = User(req["email"], req["namesurname"], req["password"], req["balance"])
-            self.send_message("User created.")
+            self.current_user = User(req["email"], 
+                                     req["namesurname"], 
+                                     req["password"], 
+                                     req["balance"])
+            self.send_message("OK")
             self.users[self.current_user.email] = self.current_user
-            with open("verification.json") as f:
-                data = dict(json.load(f))
-                self.send_message(data[req["email"]]["number"])
     
     def close(self):
         self.send_message("Selametle yine bekleriz.")
@@ -51,7 +51,6 @@ class Agent(Thread):
         with self.lock:
             try:
                 User.verify(self.current_user.email, req["verification_number"])
-                print("asdasd")
                 self.send_message("OK")
             except Exception as e:
                 self.send_message(e)
@@ -72,13 +71,22 @@ class Agent(Thread):
 
     def report(self, req):
         with self.lock:
-            self.send_object(self.current_user.report())
-            self.send_message("OK")
+            rep = self.current_user.report()
+            print(rep)
+            self.send_object(rep)
 
     def sell_item(self, req):
         with self.lock:
             try:
                 self.current_user.sell_item(self.items[req["title"]])
+                self.send_message("OK")
+            except Exception as e:
+                self.send_message(e)
+
+    def watch_user(self, req):
+        with self.lock:
+            try:
+                User.watch(req["itemtype"], self.notify)
                 self.send_message("OK")
             except Exception as e:
                 self.send_message(e)
@@ -90,6 +98,7 @@ class Agent(Thread):
             "listitems": self.list_items,
             "report": self.report,
             "sell_item": self.sell_item,
+            "watch_user": self.watch_user
         }
         user_methods[req["operation"]](req)
 
@@ -128,7 +137,9 @@ class Agent(Thread):
 
     def view(self, req):
         with self.lock:
-            self.send_object(self.items[req["title"]].view())
+            view = self.items[req["title"]].view()
+            print(view)
+            self.send_object(view)
 
     def history(self, req):
         with self.lock:
@@ -140,10 +151,11 @@ class Agent(Thread):
     def watch(self, req):
         with self.lock:
             try:
-                self.items[req["title"]].watch(self.current_user, self.notify)
+                print(self.users)
+                self.items[req["title"]].watch(self.users[req["email"]], self.notify)
                 self.send_message("OK")
-            except:
-                self.send_message("Watch failed!")
+            except Exception as e:
+                self.send_message(e)
 
     def sell_item_operations(self, req):
         sell_item_methods = {
@@ -167,6 +179,9 @@ class Agent(Thread):
                 elif req["type"] == "close":
                     self.close()
                     break
+                elif req["type"] == "close_":
+                    self.sock.close()
+                    break
                 elif req["type"] == "login":
                     self.login(req)
                 elif req["type"] == "sell_item":
@@ -187,7 +202,7 @@ def server(port):
     items = {}
     try:
         #while True:
-        for i in range(5):    # just limit # of accepts for Thread to exit
+        while True:    # just limit # of accepts for Thread to exit
             ns, peer = s.accept()
             print(peer, "connected")
             
