@@ -113,7 +113,7 @@ class Game:
 					player.cellNo = self.cellCount-1
 				actionChange = {"jump relative": actionValue,"current cell":player.cellNo}
 		
-		elif(actionKey == "drawcard"):
+		#elif(actionKey == "drawcard"):
 			
 		# Check if the game is ended
 		self._isGameEnded(player)
