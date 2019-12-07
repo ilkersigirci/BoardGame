@@ -4,7 +4,7 @@ from socket import *
 from threading import Thread
 import os,stat
 
-def client(n, port):
+def testClient(n, port):
     # send n random request
     # the connection is kept alive until client closes it.
     c = socket(AF_INET, SOCK_STREAM)

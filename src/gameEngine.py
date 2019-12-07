@@ -1,22 +1,35 @@
-import multiGame
+from Game import Game
 import time
 import random
 from socket import *
 from threading import Thread
 import os,stat
 
+
+
 class gameEngine:
-    def __init__(self):
-        configList = ["configs/gameFinish.json"]
-        gameList = []
+    gameList = []
+    host = "127.0.0.1"
+    port = "2331"
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    def __init__(self, configFile):
+        configList = []
+        with open(configFile,"r") as file:
+            line = file.readline()
+            while line:
+                configList.append(line)
+                line = file.readline()
+        
         for config in self.configList:
-            newgame = multiGame.Game(config)
+            newgame = Game(config)
             gameList.append(newgame)
 
 
     def player(self,sock):
         ''' echo uppercase string back in a loop'''
         req = sock.recv(1000)
+        player2 = asdasd
+        res = gameEngine.gameList[2].join(player2)
         req = req.rstrip()
         inp = req.decode().upper().encode() 
         # burada playeri init et
@@ -29,9 +42,6 @@ class gameEngine:
         print(sock.getpeername(), ' closing')
         
     def gameEngine(self,port):
-        
-        
-
         s = socket(AF_INET, SOCK_STREAM)
         s.bind(('',port))
         s.listen(1)    # 1 is queue size for "not yet accept()'ed connections"
