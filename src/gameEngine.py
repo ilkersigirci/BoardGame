@@ -4,6 +4,8 @@ import random
 from socket import *
 from threading import Thread
 import os,stat
+from utils import *
+
 
 '''
     gameList = []
@@ -24,47 +26,54 @@ import os,stat
 '''
 
 
-class gameEngine(Thread):
+
+
+
+class gameEngine:
+    
     def __init__(self):
+        self.networkObservers = OSubject()
         self.configList = ["configs/gameFinish.json"]
         gameList = []
         for config in self.configList:
             newgame = Game(config)
             gameList.append(newgame)
+        self.obs = OSubject()
 
 
-    def player(self,sock):
+    def agent(self,clientCon, id):
         ''' echo uppercase string back in a loop'''
-        req = sock.recv(1000)
-        req = req.rstrip()
-        inp = req.decode().upper().encode() 
+        socket = Network()
+        socket.initCon(clientCon)
+        requestOfClient = socket.receiveData()
+
         # burada playeri init et
         # while icine if else lerle komutlari al
-        while req and req != '':
+        while requestOfClient and requestOfClient != '':
             # remove trailing newline and blanks
-            req = req.rstrip()
-            sock.send(req.decode().upper().encode())
-            req = sock.recv(1000)
-        print(sock.getpeername(), ' closing')
+            self.networkObservers.notifyOne(id)
+            requestOfClient = socket.receiveData()
+        print(socket.clientAddr, ' closing')
         
-    def gameEngine(self,port):
-        
-        s = socket(AF_INET, SOCK_STREAM)
-        s.bind(('',port))
-        s.listen(1)    # 1 is queue size for "not yet accept()'ed connections"
+    def server(self,port = 2331):
+        socket = Network(port,"127.0.0.1") # defin sonrasina tasimak denenebilir
+        socket.initConnectionForClients()
         try:
-            i = 0
             while True:
             #for i in range(5):    # just limit # of accepts for Thread to exit
-                ns, peer = s.accept()
-                print(peer, "connected")
+                clientCon = socket.acceptConnectionFromClient()
+                i = self.networkObservers.register(socket) # burada hep ayni objeyi mi ekler primitive nesne olmadigi icin
+                #TODO: eger ustteki satir calismazsa direk connectionu versek de olur agenta
+                # simdilik daha temiz kod olsun diye network nesneleri ile devam ediyorum ama zorunluluk yok
                 # create a thread with new socket
-                t = Thread(target = gameEngine.player, args=(self,ns,))
+                t = Thread(target = gameEngine.agent, args=(self,clientCon,i,))
                 t.start()
                 # now main thread ready to accept next connection
         finally:
-            s.close()
+
+            socket.closeConnection()
+            #socket.close()
 game = gameEngine()
-server = Thread(target=gameEngine.gameEngine, args=(game,20448,))
+server = Thread(target=gameEngine.server, args=(game,2337,))
 server.start()
 # create 5 clients

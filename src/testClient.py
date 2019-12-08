@@ -41,7 +41,7 @@ class test:
 
         c.close()
 
-variable = test("127.0.0.1",20448)
+variable = test("127.0.0.1",2337)
 #clients = [Thread(target = client, args=(5, 20448)) for i in range(5)]
 # start clients
 #clients[0].start()

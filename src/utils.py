@@ -1,3 +1,4 @@
+import socket
 def Singleton(cls):
 	'''generic python decorator to make any class
 	singleton.'''
@@ -11,16 +12,73 @@ def Singleton(cls):
 	return getinstance
 
 
+class Network:
+	def __init__(self,port= 2331, host = "127.0.0.1"):
+		self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		self.clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		self.addr = (host, port)
+		self.clientCon = None # server tarafindan cagrilinca buralar baglanacak clientler icin gerekli olacak
+		self.clientAddr = None # kullanmazsak kaldirabiliriz cunku clientCon uzerinden communicate ediyoruz
+        #self.id = self.connect()  bu gerekli mi?
+		self.isConnectionEnded = False
+	def initCon(self,clientCon):
+		''' creating network object for existing connection '''
+		self.clientCon = clientCon
+		#self.clientSocket.connect(self.addr)
+	def initConnectionForClients(self):
+		self.serverSocket.bind(self.addr)
+		self.serverSocket.listen(1)
+	def acceptConnectionFromClient(self):
+		self.clientCon,self.clientAddr = self.serverSocket.accept()
+		self.clientSocket.connect(self.addr)
+		print(self.clientAddr, " connected") 
+		return self.clientCon
+	
+	def receiveData(self):
+		#self.clientSocket.connect(self.addr) # bunu her defasinda cagirmak sorun olursa ayri connect fonksiyounu calistir
+		return self.clientSocket.recv(2048).decode()
+	
+	def updateClient(self,data): #TODO: pickle ekle
+		try:
+			self.serverSocket.send(str.encode(data))
+		except socket.error as e:
+			return str(e)
+	def closeConnection(self):
+		try:
+			self.serverSocket.close()
+		except socket.error as e:
+			pass
+		try:
+			self.clientSocket.close()
+		except socket.error as e:
+			pass
+
+		self.isConnectionEnded = True
+
+
+
 @Singleton
-class Config:
-    def __init__(self):
-        self.vals = {}
-    def __setitem__(self,k,v):
-        self.vals[k]=v
-    def __getitem__(self,k):
-        return self.vals[k]
-    
-    
+class OSubject:
+	def __init__(self):
+		self.connections = []
+	def register(self,connection): 
+		self.connections.append(connection)
+		return self.connections.index(connection)
+		#burada indexini donebiliriz ulasim rahat olsun diye
+	def unregister(self,id):
+		if self.connections[id].isConnectionEnded == False:
+			self.connections[id].closeConnection()
+	def notifyOne(self, id, data): # boku no hero esintisi eklenebilir :)
+		self.connections[id].updateClient(data) 
+	def notifyAll(self,data):
+		for connection in self.connections:
+			if(connection.isConnectionEnded == False):
+				connection.updateClient(data)
+
+
+
+
+'''	
 a=Config()
 a['username']='onur'
 b=Config()
@@ -29,3 +87,4 @@ print(b['username'])
 Config()['filename']='445.txt'
 Config()['database']='mysql://localhost/ceng445'
 print(Config().vals)
+'''
