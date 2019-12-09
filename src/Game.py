@@ -1,5 +1,6 @@
 import json
 from Cell import Cell
+from Cell import Artifact
 from Player import Player
 import threading as th
 import random
@@ -51,14 +52,18 @@ class Game:
 	def _parseCell(self, cell):
 
 		action = ""
-		artifact = ""
+		art = ""
 
 		if "action" in cell: action = cell["action"]
-		if "artifact" in cell: artifact = cell["artifact"]
-
-		artifact[]
+		if "artifact" in cell:
+			artifact = cell["artifact"]
+			actionAction = ""
+			if "action" in artifact:
+				actionAction = artifact["action"]
+			art = Artifact(artifact["name"], artifact["owned"],
+							artifact["price"],actionAction)
 		
-		return Cell(cell["cellno"], cell["description"], action, artifact)
+		return Cell(cell["cellno"], cell["description"], action, art)
 
 	def _isGameEnded(self, player):
 
@@ -122,9 +127,10 @@ class Game:
 			pickedCard = random.choice(self.cards)
 			pickedCardKey = list(pickedCard.keys())[0]
 			pickedCardValue = list(pickedCard.values())[0]
-			actionChange = {"draw card with action of": (pickedCardKey,pickedCardValue)}
+			actionChange = {"draw card with action of": (pickedCardKey,pickedCardValue),"cardAction": "none"}
 			drawCardStateChange = self._takeAction(pickedCard, player)
-			actionChange.update(drawCardStateChange)
+			#actionChange.update(drawCardStateChange)
+			actionChange["cardAction"] = drawCardStateChange
 			
 		# Check if the game is ended
 		self._isGameEnded(player)
@@ -245,7 +251,7 @@ class Game:
 
 	def pick(self, player, pickbool):
 		playerCell = self.cells[player.cellNo]
-		stateChange = {"player":player.nickname,"cellNo":player.cellNo,"pick":pickbool, "actions":[]}
+		stateChange = {"type":"stateChange","player":player.nickname,"cellNo":player.cellNo,"pick":pickbool, "actions":[]}
 
 		if pickbool == True:
 			if(playerCell.artifact.owned == True):
@@ -257,11 +263,12 @@ class Game:
 				playerCell.artifact.owned = True
 				player.artifacts.append(playerCell.artifact)
 				action = playerCell.artifact.action
+				#print("Artifact action is ", action)
 				if action == "": # action is None or action == None or 
 					print("There is no action in the cell -- PICK")
 					stateChange["actions"].append({"message":"There is no action in the artifact"})
 				else:
-					takeActionStateChange = self._takeAction(player, action)
+					takeActionStateChange = self._takeAction(action, player)
 					stateChange["actions"].append(takeActionStateChange)
 					if self.isGameEnd  == True:
 						return stateChange
@@ -271,6 +278,6 @@ class Game:
 
 		else:   # don't change anything in this case
 			pass
-
-		print(stateChange)
+		#print(stateChange)
+		return stateChange
 		#print(json.dumps(stateChange, indent = 2))

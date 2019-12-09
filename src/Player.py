@@ -59,11 +59,11 @@ class Player:
 
         elif type == "true":
             self.currType = "artifact"
-            self.currentGame.pick(self, True)
+            stateChange = self.currentGame.pick(self, True)
 
         elif type == "false":
             self.currType = "artifact"
-            self.currentGame.pick(self, False)
+            stateChange = self.currentGame.pick(self, False)
         self.turnPhase+=1
         return stateChange
         """   

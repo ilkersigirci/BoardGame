@@ -4,6 +4,7 @@ from socket import *
 import pickle
 from threading import Thread
 import os,stat
+import json
 #import contextlib
 #with contextlib.redirect_stdout(None):
 #    import pygame
@@ -35,7 +36,8 @@ class test:
                 print(reply["message"])
             elif(reply["type"] == "listGames"):
                 print("-------------------------Printing Game MetaData-------------------------")
-                print(reply["message"])
+                #print(reply["message"])
+                print(json.dumps(reply["message"], indent = 2))
             elif (reply["type"] == "turn"):
                 if reply["turnType"] == "turnEnd":
                     print("Your turn is over!")

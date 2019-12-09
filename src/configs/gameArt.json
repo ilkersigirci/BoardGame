@@ -1,5 +1,5 @@
 {
-	"name": "Python Master",
+	"name": "Python Master_Phase2",
 	"dice": 2,
 	"cycles": false,
 	"termination": "finish",
@@ -23,6 +23,16 @@
 		{
 			"cellno": 2,
 			"description": "New IDE",
+			"action": {
+				"drawcard": 0
+			}
+		}, 
+		{
+			"cellno": 3,
+			"description": "New version",
+			"action": {
+				"jump": 3
+			},
 			"artifact": {
 				"name": "ide",
 				"owned": false,
@@ -33,15 +43,11 @@
 			}
 		}, 
 		{
-			"cellno": 3,
-			"description": "New version",
-			"action": {
-				"jump": 3
-			}
-		}, 
-		{
 			"cellno": 4,
 			"description": "New IDE",
+			"action": {
+				"drawcard": 0
+			},
 			"artifact": {
 				"name": "ide",
 				"owned": false,
@@ -53,7 +59,10 @@
 		},
 		{
 			"cellno": 5,
-			"description": ""
+			"description": "",
+			"action": {
+				"drawcard": 1
+			}
         },
         {
 			"cellno": 6,
@@ -76,7 +85,10 @@
 		},
         {
 			"cellno": 8,
-			"description": ""
+			"description": "",
+			"action": {
+				"drawcard": 1
+			}
         },
         {
 			"cellno": 9,
@@ -141,15 +153,11 @@
 
 	"cards": [{
 		"action": {
-			"skip": 1
+			"jump": 1
 		}
 	}, {
 		"action": {
 			"skip": 2
-		}
-	}, {
-		"action": {
-			"skip": 3
 		}
 	}, {
 		"action": {
