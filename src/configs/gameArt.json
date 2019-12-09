@@ -1,0 +1,160 @@
+{
+	"name": "Python Master",
+	"dice": 2,
+	"cycles": false,
+	"termination": "finish",
+	"cells": [
+		{
+			"cellno": 0,
+			"description": "Start"
+		}, 
+		{
+			"cellno": 1,
+			"description": "",
+			"artifact": {
+				"name": "ide",
+				"owned": false,
+				"price": 0,
+				"action": {
+					"jump": 1
+				}
+			}
+		},
+		{
+			"cellno": 2,
+			"description": "New IDE",
+			"artifact": {
+				"name": "ide",
+				"owned": false,
+				"price": 0,
+				"action": {
+					"skip": 1
+				}
+			}
+		}, 
+		{
+			"cellno": 3,
+			"description": "New version",
+			"action": {
+				"jump": 3
+			}
+		}, 
+		{
+			"cellno": 4,
+			"description": "New IDE",
+			"artifact": {
+				"name": "ide",
+				"owned": false,
+				"price": 0,
+				"action": {
+					"skip": 1
+				}
+			}
+		},
+		{
+			"cellno": 5,
+			"description": ""
+        },
+        {
+			"cellno": 6,
+            "description": "",
+            "action": {
+				"jump": 5
+			}
+        },
+        {
+			"cellno": 7,
+			"description": "New IDE",
+			"artifact": {
+				"name": "ide",
+				"owned": false,
+				"price": 0,
+				"action": {
+					"skip": 1
+				}
+			}
+		},
+        {
+			"cellno": 8,
+			"description": ""
+        },
+        {
+			"cellno": 9,
+			"description": ""
+        },
+        {
+			"cellno": 10,
+			"description": "New IDE",
+			"artifact": {
+				"name": "ide",
+				"owned": false,
+				"price": 0,
+				"action": {
+					"skip": 1
+				}
+			}
+		},
+        {
+			"cellno": 11,
+            "description": "",
+            "action": {
+				"jump": "=0"
+			}
+        },
+        {
+			"cellno": 12,
+			"description": ""
+        },
+        {
+			"cellno": 13,
+			"description": ""
+        },
+        {
+			"cellno": 14,
+			"description": ""
+        },
+        {
+			"cellno": 15,
+			"description": ""
+		}, 
+		{
+			"cellno": 16,
+			"description": "New IDE",
+			"artifact": {
+				"name": "ide",
+				"owned": false,
+				"price": 0,
+				"action": {
+					"skip": 1
+				}
+			}
+		},
+		{
+			"cellno": 17,
+			"description": ""
+		},
+		{
+			"cellno": 18,
+			"description": ""
+		}
+	],
+
+	"cards": [{
+		"action": {
+			"skip": 1
+		}
+	}, {
+		"action": {
+			"skip": 2
+		}
+	}, {
+		"action": {
+			"skip": 3
+		}
+	}, {
+		"action": {
+			"jump": "=0"
+		}
+	}],
+	"credit": 100
+}

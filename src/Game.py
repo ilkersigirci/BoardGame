@@ -21,7 +21,10 @@ class Game:
 		self.currRound = 0
 		self.cells = []
 		self.players = []
-		self.lock = th.Lock()
+		self.mutex = th.Lock()
+		self.mutex2 = th.Lock()
+		self.readyCond = th.Condition(self.mutex)
+		self.turnCond = th.Condition(self.mutex2)
 		self.currPlayer = None
 		self.readyPlayerCount = 0 #to check whether there is a ready player in the game or not
 		self.isGameEnd = False # False oyun devam ediyor / True oyun bitince
@@ -52,6 +55,8 @@ class Game:
 
 		if "action" in cell: action = cell["action"]
 		if "artifact" in cell: artifact = cell["artifact"]
+
+		artifact[]
 		
 		return Cell(cell["cellno"], cell["description"], action, artifact)
 
@@ -113,7 +118,13 @@ class Game:
 					player.cellNo = self.cellCount-1
 				actionChange = {"jump relative": actionValue,"current cell":player.cellNo}
 		
-		#elif(actionKey == "drawcard"):
+		elif(actionKey == "drawcard"):
+			pickedCard = random.choice(self.cards)
+			pickedCardKey = list(pickedCard.keys())[0]
+			pickedCardValue = list(pickedCard.values())[0]
+			actionChange = {"draw card with action of": (pickedCardKey,pickedCardValue)}
+			drawCardStateChange = self._takeAction(pickedCard, player)
+			actionChange.update(drawCardStateChange)
 			
 		# Check if the game is ended
 		self._isGameEnded(player)
@@ -122,7 +133,7 @@ class Game:
 
 ########################################################################################################
 	def state(self):
-		result = {"name":self.name, "cell":[],"player":[]}
+		result = {"type":"state","name":self.name, "cell":[],"player":[]}
 		for cell in self.cells:
 			result["cell"].append({"no":cell.cellno,"description":cell.description})
 		for player in self.players:
@@ -131,59 +142,70 @@ class Game:
 		
 	def join(self,player):
 		if isinstance(player, Player) == False:
-			raise Exception("Player is not valid.")
-		with self.lock:
-			if player in self.players:
-				raise Exception("This player has already joined.")
-			elif self.readyPlayerCount >0:
-				raise Exception("The game is about to start, you are late!")
-			self.players.append(player)
+			return {"type":"exception", "message":"Player is not valid."}
+		
+		if player in self.players:
+			return {"type":"exception", "message":"This player has already joined."}
+		elif self.readyPlayerCount >0:
+			return {"type":"exception", "message":"The game is about to start, you are late!"}
+		
+		self.players.append(player)
+		return {"type": "success", "message":"Login is successfull"}
 		
 	def ready(self, player):
 		self.readyPlayerCount += 1
-		if self.readyPlayerCount == len(self.players):
-			print("-----------Game is Starting-----------")
-			self.notifyPlayer()
+		""" if self.readyPlayerCount == len(self.players):
+			print("-----------Game is Starting-----------") """
+			#self.notifyPlayer()
 
 	@staticmethod
 	def listgames():
+		stateOfGames = []
 		for game in Game.games:
-			print("-------------------------Printing Game MetaData-------------------------")
-			print("Game name: {}, dice: {}, termination: {}, cycles: {}, initialCredit: {}, playerCount: {}"
-					.format(game.name, game.dice, game.terminationStr, game.cycles, game.credit, len(game.players)))
-			print(json.dumps(game.state(), indent = 2))
+			#print("-------------------------Printing Game MetaData-------------------------")
+			#print("Game name: {}, dice: {}, termination: {}, cycles: {}, initialCredit: {}, playerCount: {}"
+					#.format(game.name, game.dice, game.terminationStr, game.cycles, game.credit, len(game.players)))
+			#print(json.dumps(game.state(), indent = 2))
+			stateOfGames.append(game.state())
+			
+		return stateOfGames
 
 	
 	def next(self, player):
-
-		stateChange = {"player":player.nickname,"actions":[]}
+		cellActions = ["jump","skip","drop","drawcard", "add","pay"]
+		stateChange = {"type":"stateChange","player":player.nickname,"actions":[]}
 		
 		if(player.skipLeftRound != 0):
 			stateChange["actions"].append({"skip": player.skipLeftRound})
 			player.skipLeftRound -= 1
-			return stateChange			
 
 		elif(player.currType == "roll"):
 			diceRoll = random.randrange(self.dice) + 1
 			stateChange["actions"].append({"dice roll ": diceRoll})
 			takeActionStateChange = self._takeAction({"jump": diceRoll}, player)
 			stateChange["actions"].append(takeActionStateChange)	#TODO: json formatina yakinlastir
-			if self.isGameEnd  == True:
+			""" if self.isGameEnd  == True:
 				return stateChange
 				
-			action = self.cells[player.cellNo].action
+			#action = self.cells[player.cellNo].action
 			#print("Player {} at cellno: {} action is {}".format(player.nickname, tempCell,action))
-			if action == "": #  or action == None or action == ""
+			#if action == "": #  or action == None or action == ""
 				#print("There is no action in the cell -- NEXT")
-				stateChange["actions"].append({"There is no action in the cell:":player.cellNo})
-				return stateChange
+				#stateChange["actions"].append({"There is no action in the cell:":player.cellNo})
+				#return stateChange
 
 			takeActionStateChange = self._takeAction(action, player)
 			stateChange["actions"].append(takeActionStateChange)
 			if self.isGameEnd  == True:
-				return stateChange				
+				return stateChange """
 
-		elif(player.currType == "drawcard"):
+		elif player.currType in cellActions: # User Cell action yapmak istiyor
+			stateChange["actions"].append({"user will do cell action ": "test"})
+			action = self.cells[player.cellNo].action
+			takeActionStateChange = self._takeAction(action, player)
+			stateChange["actions"].append(takeActionStateChange)
+
+		""" elif(player.currType == "drawcard"):
 			pickedCard = random.choice(self.cards)
 			pickedCardKey = list(pickedCard.keys())[0]
 			pickedCardValue = list(pickedCard.values())[0]
@@ -191,12 +213,12 @@ class Game:
 			takeActionStateChange = self._takeAction(pickedCard, player)
 			stateChange["actions"].append(takeActionStateChange)
 			if self.isGameEnd  == True:
-				return stateChange
+				return stateChange """
 
 		return stateChange
 
-	def notifyPlayer(self): #TODO: Cycle sayi ise herkese tur basinda ekle
-		
+	""" def notifyPlayer(self):
+
 		if(self.terminationStr == "firstcollect"):
 			pass
 
@@ -218,7 +240,7 @@ class Game:
 				print("-------------------Round: {} ended------------------".format(self.currRound))
 				
 		print("-------------------Game: ended------------------")
-		print(json.dumps(self.state(), indent = 2))
+		print(json.dumps(self.state(), indent = 2)) """
 
 
 	def pick(self, player, pickbool):

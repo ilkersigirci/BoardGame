@@ -11,7 +11,7 @@ def Singleton(cls):
 		return _instances[cls]
 	return getinstance
 
-
+'''
 class Network:
 	def __init__(self,port= 2331, host = "127.0.0.1"):
 		self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -22,7 +22,6 @@ class Network:
         #self.id = self.connect()  bu gerekli mi?
 		self.isConnectionEnded = False
 	def initCon(self,clientCon):
-		''' creating network object for existing connection '''
 		self.clientCon = clientCon
 		#self.clientSocket.connect(self.addr)
 	def initConnectionForClients(self):
@@ -38,7 +37,7 @@ class Network:
 		#self.clientSocket.connect(self.addr) # bunu her defasinda cagirmak sorun olursa ayri connect fonksiyounu calistir
 		return self.clientSocket.recv(2048).decode()
 	
-	def updateClient(self,data): #TODO: pickle ekle
+	def updateClient(self,data): 
 		try:
 			self.serverSocket.send(str.encode(data))
 		except socket.error as e:
@@ -54,10 +53,10 @@ class Network:
 			pass
 
 		self.isConnectionEnded = True
+'''
 
 
-
-@Singleton
+""" @Singleton
 class OSubject:
 	def __init__(self):
 		self.connections = []
@@ -66,25 +65,43 @@ class OSubject:
 		return self.connections.index(connection)
 		#burada indexini donebiliriz ulasim rahat olsun diye
 	def unregister(self,id):
-		if self.connections[id].isConnectionEnded == False:
-			self.connections[id].closeConnection()
+		try:
+			self.connections[id].close()
+		except:
+			pass
 	def notifyOne(self, id, data): # boku no hero esintisi eklenebilir :)
-		self.connections[id].updateClient(data) 
+		self.connections[id].send((data))
 	def notifyAll(self,data):
 		for connection in self.connections:
-			if(connection.isConnectionEnded == False):
-				connection.updateClient(data)
+			try:
+				connection.send((data))
+			except:
+				pass
+ """
 
 
+@Singleton
+class OSubject:
+	def __init__(self):
+		self.connections = []
+		#self.id = -1
+	def register(self,connection): 
+		self.connections.append(connection)
+		#self.id += 1
+		return self.connections.index(connection)
+		return self.id
+	def unregister(self,id):
+		try:
+			self.connections[id].close()
+		except:
+			pass
+	def notifyOne(self, id, data): # boku no hero esintisi eklenebilir :)
+		self.connections[id].send((data))
+	def notifyAll(self,data):
+		for connection in self.connections:
+			try:
+				connection.send((data))
+			except:
+				pass
 
 
-'''	
-a=Config()
-a['username']='onur'
-b=Config()
-b['username'] = 'ilker'
-print(b['username'])
-Config()['filename']='445.txt'
-Config()['database']='mysql://localhost/ceng445'
-print(Config().vals)
-'''

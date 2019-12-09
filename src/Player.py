@@ -15,21 +15,22 @@ class Player:
         self.currType = None
         self.credit = 0
         self.artifacts = []
+        self.turnPhase = 0
         print("user "+ self.nickname + " created!")
     def join(self,game):
         
         if self.currentGame == None:
-            try:
-                game.join(self)
-                self.credit = game.credit
-                self.currentGame = game
-                
-                
-            except ValueError:                
-                print("Player {} couldn't join the game".format(self.nickname))
-        else:
             
-            self.currentGame = game
+                result = game.join(self)
+                if( result["type"] == "exception"):
+                    return result
+                if( result["type"] == "success"):
+                    self.credit = game.credit
+                    self.currentGame = game
+        else:
+            result = {"type": "exception", "message":"You already joined a game"}
+        
+        return result 
 
     def ready(self):
         if self.currentGame == None:
@@ -38,8 +39,9 @@ class Player:
             self.currentGame.ready(self)
 
     def turn(self,type):
+        stateChange = None
+        cellActions = ["jump","skip","drop","drawcard", "add","pay"]
 
-        
         if(self.currentGame == None):
             raise Exception("Player needs to join the game before turn command")
 
@@ -48,18 +50,29 @@ class Player:
         if type == "roll":
             self.currType = type
             stateChange = self.currentGame.next(self)
-            print(stateChange)
+            #print(stateChange)
             #print(json.dumps(stateChange, indent = 2))
 
-        elif type == "drawcard":
+        elif type in cellActions:
             self.currType = type
             stateChange = self.currentGame.next(self)
 
+        elif type == "true":
+            self.currType = "artifact"
+            self.currentGame.pick(self, True)
 
+        elif type == "false":
+            self.currType = "artifact"
+            self.currentGame.pick(self, False)
+        self.turnPhase+=1
+        return stateChange
+        """   
         if(isinstance(type, Artifact)): #FIXME: type nasil gelecek?  Artifact olarak mi string olarak mi?
             self.currType = "artifact" #TODO: degisecek bu ad
             respond = [True, False]
             self.currentGame.pick(self, random.choice(respond))
+        """
+        
 
 """
 When a user enters a cell with artifact, s/he is given the turn(choice('Artifact Descr')).
