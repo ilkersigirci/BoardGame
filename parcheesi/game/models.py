@@ -1,4 +1,4 @@
-from datetime import datetime
+""" from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -26,6 +26,11 @@ class Game(models.Model):
     def __str__(self):
         return "Game id: {}, Game name: {}".format(self.pk, self.name)
 
+    #TODO: cell create falan yapilabilir boyle, 
+    def createGame(self):
+        new_cell = self.cell_set.create(...)
+        return
+
     @staticmethod
     def getGameById(game_id):
         try:
@@ -44,13 +49,16 @@ class Game(models.Model):
         self.save()
 
     def getGameCells(self):
-        return Cell.objects.filter(game=self)
+        #return Cell.objects.filter(game=self)
+        return self.cell_set.all()
 
     def getGameLog(self):
-        return GameLog.objects.filter(game=self)
+        #return GameLog.objects.filter(game=self)
+        return self.gamelog_set.all() #TODO: gamelog yazisini nasil olacak tekrardan bakmak lazim
     
     def getGamePlayers(self):
-        return Player.objects.filter(game=self)
+        #return Player.objects.filter(game=self)
+        return self.player_set.all()
 
     #TODO: i nveiw
     def state(self):
@@ -133,3 +141,4 @@ class GameLog(models.Model):
 
     def __str__(self):
         return "LOG of Game id: {}, Game name: {}".format(self.game.id, self.game.name)
+ """

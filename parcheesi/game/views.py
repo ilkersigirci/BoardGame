@@ -1,13 +1,34 @@
 from django.shortcuts import render
-
-# Create your views here.
 from django.http import HttpResponse
+#from .models import Game
 
 
-def index(request):
+posts = [
+    {
+        'author': 'Ilker',
+        'title': 'Bolumden Nefret Ediyorum',
+        'content': 'First post content',
+        'date_posted': 'December 22, 2019'
+    },
+    {
+        'author': 'Onur',
+        'title': 'Hem de Coook',
+        'content': 'Second post content',
+        'date_posted': 'December 22, 2019'
+    }
+]
+
+
+def home(request):
     """ initial game page"""
-    return HttpResponse("Hello, world. You're at the polls index.")
+    context = {
+        'posts': posts
+    }
+    return render(request, 'game/home.html', context)
 
+
+def about(request):
+    return render(request, 'game/about.html', {'title': 'About'})
 
 
 def state(request):
