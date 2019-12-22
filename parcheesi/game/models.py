@@ -164,7 +164,7 @@ class Cell(models.Model):
     cell_index = models.IntegerField(default=0)
     description = models.CharField(max_length=100)
     action = models.ForeignKey(Action, blank=True, null=True, on_delete=models.PROTECT)
-    artifact = models.ForeignKey(Artifact, on_delete=models.PROTECT, null=True)
+    artifact = models.ForeignKey(Artifact, on_delete=models.PROTECT, null=True, blank=True)
     game = models.ForeignKey(Game, blank=False, null=False, on_delete=models.CASCADE)
     def __str__(self):
         return "{} {}".format(self.description,self.cell_index)
@@ -181,4 +181,3 @@ class GameLog(models.Model):
 
     def __str__(self):
         return "LOG of Game id: {}, Game name: {}".format(self.game.id, self.game.name)
- 

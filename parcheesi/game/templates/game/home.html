@@ -1,19 +1,22 @@
 {% extends "game/base.html" %}
 {% block content %}
+    <h1>LIST OF GAMES</h1>
     {% for game in games %}
         <article class="media content-section">
           <div class="media-body">
             <div class="article-metadata">
-              <a class="mr-2" href="#">{{ game.name }}</a>
-              <small class="text-muted">{{ game.game_status }}</small>
-              <small class="text-muted">{{ game.created|date:"F d, Y" }}</small>
+              <a class="mr-2" href="{% url 'game-detail' game.id %}">Game Name: {{ game.name }}</a>
+              <!-- <h5>Game Status: {{ game.game_status }}</h6> -->
+              <small class="text-muted">Game created at {{ game.created|date:"F d, Y" }}</small>
             </div>
             <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
             <p class="article-content">{{ post.content }}</p>
           </div>
         </article>
     {% endfor %}
+    {% if player %}
     <div class="article-metadata">      
       <small class="text-muted">Player name: {{ player.name }}</small>
     </div>
+    {% endif %}
 {% endblock content %}

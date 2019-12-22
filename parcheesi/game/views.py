@@ -1,8 +1,9 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-from .models import *
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+
 from django.contrib.auth.models import User
+from .models import *
 
 
 posts = [
@@ -29,12 +30,20 @@ def home(request):
     allGames = Game.listGames()
 
     context = {
-        'games': allGames,
-        'player': player
+        'games': allGames
     }
     return render(request, 'game/home.html', context)
 
+def detail(request, game_id):
 
+    player = User.objects.get(username = request.user).player
+    game = get_object_or_404(Game, pk = game_id)
+
+    context = {
+        'game': game,
+        'player': player
+    }
+    return render(request, 'game/detail.html', context)
 
 @login_required
 def about(request):

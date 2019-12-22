@@ -1,0 +1,14 @@
+{% extends "game/base.html" %}
+{% block content %}
+	<h1>{{ game.name }}</h1>
+    <p>Cells</p>
+    
+    {% if game.getGameCells %}
+        <ul>
+            {% for cell in game.getGameCells %}
+                <li>{{cell}}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}	
+	
+{% endblock content %}
