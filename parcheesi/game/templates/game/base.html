@@ -61,15 +61,31 @@
         {% if player %}
         <div class="col-md-4">
           <div class="content-section">
+
+            <!-- burada null olunca cikacak / join ile ready'nin conditionunu ayir-->
+            {% if player.game.id == null %} 
+              <form action="{% url 'game-join' player.game.id %}" method="POST" class="post-form">
+                {% csrf_token %}    
+                <button value="join" name="join" type="submit" class="btn btn-outline-primary btn-sm">Join</button>
+              </form>
+            {% endif %}
+            {% if player.is_ready == False %} 
+              <form action="{% url 'game-ready' player.game.id %}" method="POST" class="post-form">
+                {% csrf_token %}    
+                <button value="ready" name="ready" type="submit" class="btn btn-outline-primary btn-sm">Ready</button>
+              </form>
+            {% endif %}
+
             <h3>Player Actions</h3>
-              <div class="btn-group" role="group" aria-label="Player Actions">
-                <a href="{% url 'logout' %}" class="btn btn-outline-primary btn-sm " role="button">Roll the Dice</a>                
-                <a href="{% url 'logout' %}" class="btn btn-outline-dark btn-sm " role="button">Next</a>
-              </div>           
-              <div class="btn-group" role="group" aria-label="Player Actions">   
-                <a href="{% url 'logout' %}" class="btn btn-outline-success btn-sm " role="button">Pick Artifact</a>
-                <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm " role="button">Don't Pick Artifact</a>
-              </div>  
+            <form action="{% url 'game-action' player.game.id %}" method="POST" class="post-form">
+              {% csrf_token %}              
+              <div class="btn-group" role="group" aria-label="Player Actions">                
+                <button value="roll" name="roll" type="submit" class="btn btn-outline-primary btn-sm">Roll the Dice</button>
+                <button value="pick" name="pick" type="submit" class="btn btn-outline-success btn-sm">Pick</button>
+                <button value="no_pick" name="no_pick" type="submit" class="btn btn-outline-danger btn-sm"  >Don't Pick</button>
+                <button value="next" name="next" type="submit" class="btn btn-outline-dark btn-sm">Next</button>
+              </div>
+            </form> 
               <ul class="list-group">
                 <li class="list-group-item list-group-item-light">Game Log</li>
               </ul>

@@ -26,10 +26,9 @@ class Game(models.Model):
     def __str__(self):
         return "Game id: {}, Game name: {}".format(self.pk, self.name)
 
-    #TODO: cell create falan yapilabilir boyle, 
-    def createGame(self):
+    """ def createGame(self):
         new_cell = self.cell_set.create(...)
-        return
+        return """
 
     @staticmethod
     def getGameById(game_id):
@@ -79,7 +78,7 @@ class Game(models.Model):
         return log
 
     def getCurrentPlayer(self):
-        current_player = Player.getPlayerById(self.current_player_id)
+        current_player = Player.objects.get(pk=self.current_player_id)
         return current_player
 
     def takeAction(self, current_player, action):
@@ -113,11 +112,15 @@ class Player(models.Model):
     skipLeftRound = models.IntegerField(default=0)
     credits = models.IntegerField(default=100)
     current_cell = models.IntegerField(default=0)
-    user = models.OneToOneField(User, null = True,on_delete=models.CASCADE)
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    is_ready = models.BooleanField(default=False)
 
     @staticmethod
     def getPlayerById(player_id):
-        return Player.objects.get(player_id)
+        return Player.objects.get(pk=player_id)
+    def __str__(self):
+        return self.name
+    
 
 class ActionName(models.Model):
     name = models.CharField(max_length=20)
@@ -167,7 +170,19 @@ class Cell(models.Model):
     artifact = models.ForeignKey(Artifact, on_delete=models.PROTECT, null=True, blank=True)
     game = models.ForeignKey(Game, blank=False, null=False, on_delete=models.CASCADE)
     def __str__(self):
-        return "{} {}".format(self.description,self.cell_index)
+        if self.action is None:
+            if self.artifact is None:
+                return "{}. {}".format(self.cell_index, self.description)
+            else:
+                return "{}. {}, {}".format(self.cell_index, self.description, self.artifact)    
+            return "{}. {}".format(self.cell_index, self.description)
+        else:
+            if self.artifact is None:
+                return "{}. {}, {}".format(self.cell_index, self.description,self.action)
+            else:
+                return "{}. {}, {}, {}".format(self.cell_index, self.description, self.action, self.artifact)    
+            return "{}. {}".format(self.cell_index, self.description)
+        return "{} {}".format(self.description, self.cell_index)
     
 
 
