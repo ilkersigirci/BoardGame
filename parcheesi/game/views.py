@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-#from .models import Game
+from .models import *
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 
 posts = [
@@ -18,19 +20,27 @@ posts = [
     }
 ]
 
-
+@login_required
 def home(request):
     """ initial game page"""
+    
+    player = User.objects.get(username = request.user).player
+
+    allGames = Game.listGames()
+
     context = {
-        'posts': posts
+        'games': allGames,
+        'player': player
     }
     return render(request, 'game/home.html', context)
 
 
+
+@login_required
 def about(request):
     return render(request, 'game/about.html', {'title': 'About'})
 
-
+@login_required
 def state(request):
     """ returns the game state """
     '''
@@ -38,10 +48,11 @@ def state(request):
         cells = self.getGameCells()
         gameLog = self.getGameLog()
         players = self.getGamePlayers();
-        return 
+        return
     '''
     pass
 
+@login_required
 def next(request):
     #student = User.objects.get(username = request.user).student
     # player = get request.user pleyari
