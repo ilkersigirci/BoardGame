@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'dbbackup',
     'game.apps.GameConfig',
     'users.apps.UsersConfig',
     'crispy_forms',

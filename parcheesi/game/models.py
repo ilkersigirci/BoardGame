@@ -47,12 +47,6 @@ class Game(models.Model):
         self.game_ended = True #completeddan degistirdim
         self.game_status = "Game is ended"
         self.save()
-    
-    def ready(self):
-        pass
-
-    def join(self):
-        pass
 
     def getGameCells(self):
         #return Cell.objects.filter(game=self)
@@ -66,17 +60,11 @@ class Game(models.Model):
         #return Player.objects.filter(game=self)
         return self.player_set.all()
 
-    #TODO: i nveiw
-    def state(self):
-        cells = self.getGameCells()
-        gameLog = self.getGameLog()
-        players = self.getGamePlayers();
-        return 
-
     def addLog(self, message, player=None):
         log = GameLog(game=self, message=message, player=player).save()
         return log
 
+    #FIXME: calismiyor -> we don't know why
     def getCurrentPlayer(self):
         current_player = Player.objects.get(pk=self.current_player_id)
         return current_player
@@ -114,7 +102,9 @@ class Player(models.Model):
     current_cell = models.IntegerField(default=0)
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
     is_ready = models.BooleanField(default=False)
-
+    next_available_move = models.CharField(default="roll", max_length=20)
+    artifact_count = models.IntegerField(default=0)
+    
     @staticmethod
     def getPlayerById(player_id):
         return Player.objects.get(pk=player_id)
@@ -124,6 +114,7 @@ class Player(models.Model):
 
 class ActionName(models.Model):
     name = models.CharField(max_length=20)
+    
     def __str__(self):
         return self.name
 
@@ -132,6 +123,7 @@ class Action(models.Model):
     value = models.IntegerField(default=0)
     player_id = models.IntegerField(default=0, null=True, blank=True) #TODO: Bunu user pk lari ile uyumlu hale getirmek lazim
     #player_id = models.CharField(max_length=20,null=True, blank=True)
+    
     def __str__(self):
         if self.name == "pay":
             return "Action: {} to the player {}, with value: {}".format(self.name, self.value, self.player_id)
@@ -169,6 +161,7 @@ class Cell(models.Model):
     action = models.ForeignKey(Action, blank=True, null=True, on_delete=models.PROTECT)
     artifact = models.ForeignKey(Artifact, on_delete=models.PROTECT, null=True, blank=True)
     game = models.ForeignKey(Game, blank=False, null=False, on_delete=models.CASCADE)
+    
     def __str__(self):
         if self.action is None:
             if self.artifact is None:

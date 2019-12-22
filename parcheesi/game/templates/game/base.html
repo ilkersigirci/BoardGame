@@ -77,12 +77,12 @@
             {% endif %}
 
             <h3>Player Actions</h3>
-            <form action="{% url 'game-action' player.game.id %}" method="POST" class="post-form">
+            <form action="{% url 'game-next' player.game.id %}" method="POST" class="post-form">
               {% csrf_token %}              
               <div class="btn-group" role="group" aria-label="Player Actions">                
                 <button value="roll" name="roll" type="submit" class="btn btn-outline-primary btn-sm">Roll the Dice</button>
-                <button value="pick" name="pick" type="submit" class="btn btn-outline-success btn-sm">Pick</button>
-                <button value="no_pick" name="no_pick" type="submit" class="btn btn-outline-danger btn-sm"  >Don't Pick</button>
+                <button value="true" name="pick" type="submit" class="btn btn-outline-success btn-sm">Pick</button>
+                <button value="false" name="no_pick" type="submit" class="btn btn-outline-danger btn-sm"  >Don't Pick</button>
                 <button value="next" name="next" type="submit" class="btn btn-outline-dark btn-sm">Next</button>
               </div>
             </form> 
