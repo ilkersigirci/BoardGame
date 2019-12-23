@@ -76,7 +76,7 @@
                 </form>
               {% endif %}
               <h3>Player Actions</h3>
-              {% if game.game_status == "Game is started" and game.getCurrentPlayer.name == player.name %}
+              {% if game.game_status == "playing" and game.getCurrentPlayer.name == player.name %}
                 <div class="alert alert-success" role="alert">You are the current user!</div>
               {% else %}
                 <div class="alert alert-danger" role="alert">You are not the current user!</div>
@@ -97,7 +97,7 @@
                 </div>
               </form>
               <ul class="list-group">
-                {% if game.game_status == "Game is started" and game.getGameLog%}
+                {% if game.game_status == "playing" and game.getGameLog%}
                 <ul class="list-group">
                     {% for log in game.getGameLog reversed %}
                         <li class="list-group-item-warning">{{log}}</li>

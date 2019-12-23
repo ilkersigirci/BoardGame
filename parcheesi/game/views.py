@@ -35,7 +35,8 @@ def detail(request, game_id):
 
     context = {
         'game': game,
-        'player': player
+        'player': player,
+        'title': 'Detail'
     }
     return render(request, 'game/detail.html', context)
 
@@ -45,6 +46,26 @@ def about(request):
 
 #######################################################################################
 
+@login_required
+def changePlayer(player, game):
+    players = game.getGamePlayers()
+    player_list = []
+    next_player_id = 0
+    player_size = 0
+    for pl in players:
+        player_list.append(pl.id)
+        player_size+=1
+    player_list.sort()
+    for pl_index in range(0,player_size):
+        if player.id == player_list[pl_index]:
+            if pl_index == player_size-1: #new round
+                next_player_id = player_list[0]
+            else:
+                next_player_id = player_list[pl_index+1]
+
+    game.current_player_id = next_player_id
+    player.save()
+    game.save()
     
 
 @login_required
@@ -87,7 +108,7 @@ def ready(request, game_id):
     messages.success(request, f'You are ready for the game')
     
     if(game.ready_player_count == game.player_count):
-        game.game_status = "Game is started"
+        game.game_status = "playing"
         players = game.getGamePlayers()
         player_list = []
         for pl in players:
@@ -154,24 +175,6 @@ def game_next(request, game_id): #FIXME: round sonunda cycle ekle
             game.save()
         else:
             pass
-            
-        """ players = game.getGamePlayers()
-        player_list = []
-        next_player_id = 0
-        player_size = 0
-        for pl in players:
-            player_list.append(pl.id)
-            player_size+=1
-        player_list.sort()
-        for pl_index in range(0,player_size) :
-            if player.id == player_list[pl_index]:
-                if pl_index == player_size-1:
-                    next_player_id = player_list[0]
-                else:
-                    next_player_id = player_list[pl_index+1]
-
-        game.current_player_id = next_player_id
-        game.save() """
 
         changePlayer(player, game)
                     
@@ -245,26 +248,7 @@ def pick(request, game_id):
     changePlayer(player, game)
     return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
 
-@login_required
-def changePlayer(player, game):
-    players = game.getGamePlayers()
-    player_list = []
-    next_player_id = 0
-    player_size = 0
-    for pl in players:
-        player_list.append(pl.id)
-        player_size+=1
-    player_list.sort()
-    for pl_index in range(0,player_size):
-        if player.id == player_list[pl_index]:
-            if pl_index == player_size-1:
-                next_player_id = player_list[0]
-            else:
-                next_player_id = player_list[pl_index+1]
 
-    game.current_player_id = next_player_id
-    player.save()
-    game.save()
 
 
 @login_required

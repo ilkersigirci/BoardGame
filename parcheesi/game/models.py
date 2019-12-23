@@ -21,15 +21,11 @@ class Game(models.Model):
     termination_value = models.IntegerField(default=0)
     ready_player_count = models.IntegerField(default=0,null=True)
     player_count = models.IntegerField(default=0)
-    game_status = models.CharField(max_length=30,default="initial game")
+    game_status = models.CharField(max_length=30,default="initial")
     cell_count = models.IntegerField(default=0)
 
     def __str__(self):
         return "Game id: {}, Game name: {}".format(self.pk, self.name)
-
-    """ def createGame(self):
-        new_cell = self.cell_set.create(...)
-        return """
 
     @staticmethod
     def getGameById(game_id):
@@ -45,19 +41,15 @@ class Game(models.Model):
 
     def finishGame(self, winner):
         self.winner = winner
-        self.game_ended = True #completeddan degistirdim
-        self.game_status = "Game is ended"
+        self.game_ended = True
+        self.game_status = "ended"
         self.save()
 
     def getGameCells(self):
-        #return Cell.objects.filter(game=self)
         return self.cell_set.all()
 
     def getGameLog(self):
-        #return GameLog.objects.filter(game=self)
-        return self.gamelog_set.all() #TODO: gamelog yazisini nasil olacak tekrardan bakmak lazim
-        #reverseList = self.gamelog_set.all()
-        #return reverseList.sort(reverse=True)
+        return self.gamelog_set.all()
 
     def getGamePlayers(self):
         #return Player.objects.filter(game=self)
@@ -67,7 +59,6 @@ class Game(models.Model):
         log = GameLog(game=self, message=message, player=player).save()
         return log
 
-    #FIXME: calismiyor -> we don't know why
     def getCurrentPlayer(self):
         current_player = Player.objects.get(pk=self.current_player_id)
         return current_player
@@ -79,17 +70,14 @@ class Game(models.Model):
         if(action_key == "skip"):
             current_player.skip_left_round += action_value
             message = "Player " + current_player.name + " skipped " + str(action_value)
-            #log = self.addLog(message , current_player)
    
         elif(action_key == "drop"):
             current_player.credits -= action_value
             message = "Player " + current_player.name + " has lost " + str(action_value) + " credits"
-            #log = self.addLog(message , current_player)
 
         elif(action_key == "add"):
             current_player.credits += action_value
             message = "Player " + current_player.name + " got " + str(action_value) + " credits"
-            #log = self.addLog(message , current_player)
 
         
         elif(action_key == "pay"):
@@ -98,12 +86,10 @@ class Game(models.Model):
             current_player.credits -= action_value            
             paid_player.save()
             message = "Player " + current_player.name + " paid " + str(action_value) + " to Player " +  paid_player.name
-            #log = self.addLog(message , current_player)
         
         elif(action_key == "jumpA"):
             current_player.current_cell = action_value
             message = "Player " + current_player.name + " jump absolute " + str(action_value) + " and his current cell is " + str(current_player.current_cell)
-            #log = self.addLog(message , current_player)
 
         elif(action_key == "jumpR"):
             current_player.current_cell += action_value
@@ -119,14 +105,12 @@ class Game(models.Model):
             elif current_player.current_cell >= self.cell_count:
                 current_player.current_cell = self.cell_count-1
             message = "Player " + current_player.name + " jump relative " + str(action_value) + " and his current cell is " + str(current_player.current_cell)
-            #log = self.addLog(message , current_player)
 
         
         elif(action_key == "drawcard"):
             picked_card = random.choice(Card.objects.all())
             picked_action = picked_card.action
             message = "Player " + current_player.name + " drawed  the card: " + str(action_value) 
-            #log = self.addLog(message , current_player)
             self.takeAction(current_player, picked_action)
         
         
@@ -140,21 +124,16 @@ class Game(models.Model):
     def isGameEnded(self,player):
         if(self.termination_condition == "round"):
             if player.cycle_count >= self.termination_value:
-                self.game_ended = True
-                self.game_status = "game is ended"
+                finishGame(player)
         elif(self.termination_condition == "finish"):
-            if player.cycle_count >= self.termination_value-1:
-                self.game_ended = True
-                self.game_status = "game is ended"
+            if player.current_cell >= self.termination_value-1:
+                finishGame(player)
         elif(self.termination_condition == "firstbroke"):
-            if player.cycle_count <= self.termination_value:
-                self.game_ended = True
-                self.game_status = "game is ended"
+            if player.credits <= 0:
+                finishGame(player)
         elif(self.termination_condition == "firstcollect"):
-            if player.cycle_count >= self.termination_value:
-                self.game_ended = True
-                self.game_status = "game is ended"
-        self.save()
+            if player.artifact_count >= self.termination_value:
+                finishGame(player)
         
 
 class Player(models.Model):
@@ -187,7 +166,6 @@ class Action(models.Model):
     name = models.ForeignKey(ActionName, on_delete=models.PROTECT)
     value = models.IntegerField(default=0)
     player_id = models.IntegerField(default=0, null=True, blank=True) #TODO: Bunu user pk lari ile uyumlu hale getirmek lazim
-    #player_id = models.CharField(max_length=20,null=True, blank=True)
     
     def __str__(self):
         if self.name == "pay":
@@ -230,17 +208,17 @@ class Cell(models.Model):
     def __str__(self):
         if self.action is None:
             if self.artifact is None:
-                return "{}. {}".format(self.cell_index, self.description)
+                return "Index: {}, desp: {}".format(self.cell_index, self.description)
             else:
-                return "{}. {}, {}".format(self.cell_index, self.description, self.artifact)    
-            return "{}. {}".format(self.cell_index, self.description)
+                return "Index: {}, desp: {}, {}".format(self.cell_index, self.description, self.artifact)    
+            return "Index: {}, desp: {}".format(self.cell_index, self.description)
         else:
             if self.artifact is None:
-                return "{}. {}, {}".format(self.cell_index, self.description,self.action)
+                return "Index: {}, desp: {}, {}".format(self.cell_index, self.description,self.action)
             else:
-                return "{}. {}, {}, {}".format(self.cell_index, self.description, self.action, self.artifact)    
-            return "{}. {}".format(self.cell_index, self.description)
-        return "{} {}".format(self.description, self.cell_index)
+                return "Index: {}, desp: {}, {}, {}".format(self.cell_index, self.description, self.action, self.artifact)    
+            return "Index: {}, desp: {}".format(self.cell_index, self.description)
+        return "Index: {}, desp: {}".format(self.cell_index, self.description)
     
 
 
