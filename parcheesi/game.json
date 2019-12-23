@@ -1,1043 +1,1476 @@
 [{
-    "model": "game.player",
-    "pk": 1,
+    "model": "game.actionname",
+    "pk": 7,
     "fields": {
-        "name": "onur",
-        "game": 1,
-        "skipLeftRound": 0,
-        "credits": 100,
-        "current_cell": 0
-    }
-}, {
-    "model": "game.player",
-    "pk": 2,
-    "fields": {
-        "name": "ilker",
-        "game": 1,
-        "skipLeftRound": 0,
-        "credits": 100,
-        "current_cell": 0
+        "name": "jumpA"
     }
 }, {
     "model": "game.actionname",
-    "pk": 1,
+    "pk": 8,
+    "fields": {
+        "name": "skip"
+    }
+}, {
+    "model": "game.actionname",
+    "pk": 9,
     "fields": {
         "name": "jumpR"
     }
 }, {
     "model": "game.actionname",
-    "pk": 2,
-    "fields": {
-        "name": "jumA"
-    }
-}, {
-    "model": "game.actionname",
-    "pk": 3,
+    "pk": 10,
     "fields": {
         "name": "pay"
     }
 }, {
     "model": "game.actionname",
-    "pk": 4,
+    "pk": 11,
     "fields": {
         "name": "drop"
     }
 }, {
     "model": "game.actionname",
-    "pk": 5,
+    "pk": 12,
     "fields": {
         "name": "add"
     }
 }, {
     "model": "game.actionname",
+    "pk": 13,
+    "fields": {
+        "name": "drawcard"
+    }
+}, {
+    "model": "game.action",
     "pk": 6,
     "fields": {
-        "name": "skip"
+        "name": 11,
+        "value": 20,
+        "player_id": 0
     }
 }, {
     "model": "game.action",
-    "pk": 1,
-    "fields": {
-        "name": 1,
-        "value": 3,
-        "player_id": null
-    }
-}, {
-    "model": "game.action",
-    "pk": 2,
-    "fields": {
-        "name": 1,
-        "value": -3,
-        "player_id": null
-    }
-}, {
-    "model": "game.action",
-    "pk": 3,
-    "fields": {
-        "name": 2,
-        "value": 0,
-        "player_id": null
-    }
-}, {
-    "model": "game.action",
-    "pk": 4,
-    "fields": {
-        "name": 3,
-        "value": 0,
-        "player_id": "1"
-    }
-}, {
-    "model": "game.action",
-    "pk": 5,
-    "fields": {
-        "name": 2,
-        "value": 0,
-        "player_id": null
-    }
-}, {
-    "model": "game.artifact",
-    "pk": 1,
-    "fields": {
-        "name": "onur",
-        "owned": false,
-        "player": null,
-        "price": 20,
-        "action": 1
-    }
-}, {
-    "model": "game.artifact",
-    "pk": 2,
-    "fields": {
-        "name": "ilker adelesi",
-        "owned": false,
-        "player": null,
-        "price": 100,
-        "action": 3
-    }
-}, {
-    "model": "game.cell",
-    "pk": 1,
-    "fields": {
-        "cell_index": 0,
-        "description": "dummy 0",
-        "action": 1,
-        "artifact": 2,
-        "game": 1
-    }
-}, {
-    "model": "game.cell",
-    "pk": 2,
-    "fields": {
-        "cell_index": 1,
-        "description": "onur laneti",
-        "action": 2,
-        "artifact": 1,
-        "game": 1
-    }
-}, {
-    "model": "game.cell",
-    "pk": 3,
-    "fields": {
-        "cell_index": 2,
-        "description": "son cell",
-        "action": 4,
-        "artifact": 2,
-        "game": 1
-    }
-}, {
-    "model": "contenttypes.contenttype",
-    "pk": 1,
-    "fields": {
-        "app_label": "admin",
-        "model": "logentry"
-    }
-}, {
-    "model": "contenttypes.contenttype",
-    "pk": 2,
-    "fields": {
-        "app_label": "auth",
-        "model": "permission"
-    }
-}, {
-    "model": "contenttypes.contenttype",
-    "pk": 3,
-    "fields": {
-        "app_label": "auth",
-        "model": "group"
-    }
-}, {
-    "model": "contenttypes.contenttype",
-    "pk": 4,
-    "fields": {
-        "app_label": "auth",
-        "model": "user"
-    }
-}, {
-    "model": "contenttypes.contenttype",
-    "pk": 5,
-    "fields": {
-        "app_label": "contenttypes",
-        "model": "contenttype"
-    }
-}, {
-    "model": "contenttypes.contenttype",
-    "pk": 6,
-    "fields": {
-        "app_label": "sessions",
-        "model": "session"
-    }
-}, {
-    "model": "contenttypes.contenttype",
     "pk": 7,
     "fields": {
-        "app_label": "game",
-        "model": "player"
+        "name": 11,
+        "value": 40,
+        "player_id": 0
     }
 }, {
-    "model": "contenttypes.contenttype",
+    "model": "game.action",
     "pk": 8,
     "fields": {
-        "app_label": "game",
-        "model": "artifact"
+        "name": 9,
+        "value": 2,
+        "player_id": 0
+    }
+}, {
+    "model": "game.action",
+    "pk": 9,
+    "fields": {
+        "name": 13,
+        "value": 0,
+        "player_id": 0
+    }
+}, {
+    "model": "game.action",
+    "pk": 10,
+    "fields": {
+        "name": 7,
+        "value": 1,
+        "player_id": 0
+    }
+}, {
+    "model": "game.action",
+    "pk": 11,
+    "fields": {
+        "name": 12,
+        "value": 20,
+        "player_id": 0
+    }
+}, {
+    "model": "game.action",
+    "pk": 12,
+    "fields": {
+        "name": 10,
+        "value": 50,
+        "player_id": -1
+    }
+}, {
+    "model": "game.card",
+    "pk": 7,
+    "fields": {
+        "action": 6
+    }
+}, {
+    "model": "game.card",
+    "pk": 8,
+    "fields": {
+        "action": 8
+    }
+}, {
+    "model": "game.card",
+    "pk": 9,
+    "fields": {
+        "action": 12
+    }
+}, {
+    "model": "game.card",
+    "pk": 10,
+    "fields": {
+        "action": 10
+    }
+}, {
+    "model": "game.card",
+    "pk": 11,
+    "fields": {
+        "action": 11
+    }
+}, {
+    "model": "game.artifact",
+    "pk": 5,
+    "fields": {
+        "name": "haydartifact",
+        "owned": false,
+        "player": null,
+        "price": 10,
+        "action": null
+    }
+}, {
+    "model": "game.artifact",
+    "pk": 6,
+    "fields": {
+        "name": "firstArtifact",
+        "owned": false,
+        "player": null,
+        "price": 50,
+        "action": 10
+    }
+}, {
+    "model": "game.cell",
+    "pk": 3,
+    "fields": {
+        "cell_index": 0,
+        "description": "cell0",
+        "action": 8,
+        "artifact": null,
+        "game": 1
+    }
+}, {
+    "model": "game.cell",
+    "pk": 4,
+    "fields": {
+        "cell_index": 0,
+        "description": "game2 ilk",
+        "action": 11,
+        "artifact": null,
+        "game": 2
+    }
+}, {
+    "model": "game.cell",
+    "pk": 5,
+    "fields": {
+        "cell_index": 1,
+        "description": "cell1",
+        "action": 11,
+        "artifact": 5,
+        "game": 1
+    }
+}, {
+    "model": "game.cell",
+    "pk": 6,
+    "fields": {
+        "cell_index": 1,
+        "description": "ikinci",
+        "action": null,
+        "artifact": 6,
+        "game": 2
+    }
+}, {
+    "model": "game.cell",
+    "pk": 7,
+    "fields": {
+        "cell_index": 2,
+        "description": "cell2",
+        "action": 8,
+        "artifact": null,
+        "game": 1
+    }
+}, {
+    "model": "game.cell",
+    "pk": 8,
+    "fields": {
+        "cell_index": 3,
+        "description": "cell3",
+        "action": null,
+        "artifact": 6,
+        "game": 1
+    }
+}, {
+    "model": "game.cell",
+    "pk": 9,
+    "fields": {
+        "cell_index": 2,
+        "description": "gg",
+        "action": 9,
+        "artifact": null,
+        "game": 2
+    }
+}, {
+    "model": "game.cell",
+    "pk": 10,
+    "fields": {
+        "cell_index": 4,
+        "description": "cell4",
+        "action": null,
+        "artifact": null,
+        "game": 1
+    }
+}, {
+    "model": "game.cell",
+    "pk": 11,
+    "fields": {
+        "cell_index": 3,
+        "description": "hadi",
+        "action": 10,
+        "artifact": null,
+        "game": 2
+    }
+}, {
+    "model": "game.cell",
+    "pk": 12,
+    "fields": {
+        "cell_index": 4,
+        "description": "sona dogru",
+        "action": 8,
+        "artifact": 6,
+        "game": 2
+    }
+}, {
+    "model": "game.cell",
+    "pk": 13,
+    "fields": {
+        "cell_index": 5,
+        "description": "finall",
+        "action": null,
+        "artifact": null,
+        "game": 2
+    }
+}, {
+    "model": "game.gamelog",
+    "pk": 1,
+    "fields": {
+        "game": 2,
+        "message": "Dice rolled3",
+        "player": 2,
+        "created": "2019-12-23T00:10:27.237Z",
+        "modified": "2019-12-23T00:10:27.237Z"
     }
 }, {
     "model": "contenttypes.contenttype",
-    "pk": 9,
+    "pk": 15,
     "fields": {
         "app_label": "game",
         "model": "game"
     }
 }, {
     "model": "contenttypes.contenttype",
-    "pk": 10,
+    "pk": 16,
+    "fields": {
+        "app_label": "game",
+        "model": "player"
+    }
+}, {
+    "model": "contenttypes.contenttype",
+    "pk": 17,
+    "fields": {
+        "app_label": "game",
+        "model": "actionname"
+    }
+}, {
+    "model": "contenttypes.contenttype",
+    "pk": 18,
     "fields": {
         "app_label": "game",
         "model": "action"
     }
 }, {
     "model": "contenttypes.contenttype",
-    "pk": 11,
+    "pk": 19,
+    "fields": {
+        "app_label": "game",
+        "model": "card"
+    }
+}, {
+    "model": "contenttypes.contenttype",
+    "pk": 20,
+    "fields": {
+        "app_label": "game",
+        "model": "artifact"
+    }
+}, {
+    "model": "contenttypes.contenttype",
+    "pk": 21,
     "fields": {
         "app_label": "game",
         "model": "cell"
     }
 }, {
     "model": "contenttypes.contenttype",
-    "pk": 12,
+    "pk": 22,
     "fields": {
         "app_label": "game",
         "model": "gamelog"
     }
 }, {
     "model": "contenttypes.contenttype",
-    "pk": 13,
-    "fields": {
-        "app_label": "game",
-        "model": "actionname"
-    }
-}, {
-    "model": "sessions.session",
-    "pk": "lrpqj13gn1xzkluz2p3kbvc1akqek3c1",
-    "fields": {
-        "session_data": "Y2FmYWFkNTMzYTk0MzVhNGI2OGYxNzE5ZDNmMzY4YmEzOTIzZjAwYTp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJhZThlODgwZmQ2N2M2NzUzMTA1MmIzNGFhZGYyMDU1NDQxMGUyNDFlIn0=",
-        "expire_date": "2020-01-05T06:52:25.445Z"
-    }
-}, {
-    "model": "sessions.session",
-    "pk": "t1tb8q4985r75b041aavpfbxop576wr6",
-    "fields": {
-        "session_data": "NjY2NzQzMjI0Mzk1NGUzMDFkZGVjYTdkOTQ1ZTgwNzAwNWNlMTY0Nzp7Il9hdXRoX3VzZXJfaWQiOiIyIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiI2NzI4NzYxOGFkZWM3M2E5ZDIzNzk4M2Y1ODFhYjU2MjI1MDQ3NmY4In0=",
-        "expire_date": "2020-01-04T21:41:26.244Z"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 1,
-    "fields": {
-        "name": "Can add log entry",
-        "content_type": 1,
-        "codename": "add_logentry"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 2,
-    "fields": {
-        "name": "Can change log entry",
-        "content_type": 1,
-        "codename": "change_logentry"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 3,
-    "fields": {
-        "name": "Can delete log entry",
-        "content_type": 1,
-        "codename": "delete_logentry"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 4,
-    "fields": {
-        "name": "Can view log entry",
-        "content_type": 1,
-        "codename": "view_logentry"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 5,
-    "fields": {
-        "name": "Can add permission",
-        "content_type": 2,
-        "codename": "add_permission"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 6,
-    "fields": {
-        "name": "Can change permission",
-        "content_type": 2,
-        "codename": "change_permission"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 7,
-    "fields": {
-        "name": "Can delete permission",
-        "content_type": 2,
-        "codename": "delete_permission"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 8,
-    "fields": {
-        "name": "Can view permission",
-        "content_type": 2,
-        "codename": "view_permission"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 9,
-    "fields": {
-        "name": "Can add group",
-        "content_type": 3,
-        "codename": "add_group"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 10,
-    "fields": {
-        "name": "Can change group",
-        "content_type": 3,
-        "codename": "change_group"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 11,
-    "fields": {
-        "name": "Can delete group",
-        "content_type": 3,
-        "codename": "delete_group"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 12,
-    "fields": {
-        "name": "Can view group",
-        "content_type": 3,
-        "codename": "view_group"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 13,
-    "fields": {
-        "name": "Can add user",
-        "content_type": 4,
-        "codename": "add_user"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 14,
-    "fields": {
-        "name": "Can change user",
-        "content_type": 4,
-        "codename": "change_user"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 15,
-    "fields": {
-        "name": "Can delete user",
-        "content_type": 4,
-        "codename": "delete_user"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 16,
-    "fields": {
-        "name": "Can view user",
-        "content_type": 4,
-        "codename": "view_user"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 17,
-    "fields": {
-        "name": "Can add content type",
-        "content_type": 5,
-        "codename": "add_contenttype"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 18,
-    "fields": {
-        "name": "Can change content type",
-        "content_type": 5,
-        "codename": "change_contenttype"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 19,
-    "fields": {
-        "name": "Can delete content type",
-        "content_type": 5,
-        "codename": "delete_contenttype"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 20,
-    "fields": {
-        "name": "Can view content type",
-        "content_type": 5,
-        "codename": "view_contenttype"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 21,
-    "fields": {
-        "name": "Can add session",
-        "content_type": 6,
-        "codename": "add_session"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 22,
-    "fields": {
-        "name": "Can change session",
-        "content_type": 6,
-        "codename": "change_session"
-    }
-}, {
-    "model": "auth.permission",
     "pk": 23,
     "fields": {
-        "name": "Can delete session",
-        "content_type": 6,
-        "codename": "delete_session"
+        "app_label": "admin",
+        "model": "logentry"
     }
 }, {
-    "model": "auth.permission",
+    "model": "contenttypes.contenttype",
     "pk": 24,
     "fields": {
-        "name": "Can view session",
-        "content_type": 6,
-        "codename": "view_session"
+        "app_label": "auth",
+        "model": "permission"
     }
 }, {
-    "model": "auth.permission",
+    "model": "contenttypes.contenttype",
     "pk": 25,
     "fields": {
-        "name": "Can add player",
-        "content_type": 7,
-        "codename": "add_player"
+        "app_label": "auth",
+        "model": "group"
     }
 }, {
-    "model": "auth.permission",
+    "model": "contenttypes.contenttype",
     "pk": 26,
     "fields": {
-        "name": "Can change player",
-        "content_type": 7,
-        "codename": "change_player"
+        "app_label": "auth",
+        "model": "user"
     }
 }, {
-    "model": "auth.permission",
+    "model": "contenttypes.contenttype",
     "pk": 27,
     "fields": {
-        "name": "Can delete player",
-        "content_type": 7,
-        "codename": "delete_player"
+        "app_label": "contenttypes",
+        "model": "contenttype"
     }
 }, {
-    "model": "auth.permission",
+    "model": "contenttypes.contenttype",
     "pk": 28,
     "fields": {
-        "name": "Can view player",
-        "content_type": 7,
-        "codename": "view_player"
+        "app_label": "sessions",
+        "model": "session"
     }
 }, {
-    "model": "auth.permission",
-    "pk": 29,
+    "model": "sessions.session",
+    "pk": "37mvld7m4am3qg3ue7sq39ygedp2o56t",
     "fields": {
-        "name": "Can add artifact",
-        "content_type": 8,
-        "codename": "add_artifact"
+        "session_data": "YjRhZjdkMGRmYTllMDJlY2YzNjM2YzI4MWY2OGMwOWFiOGE5YmY5MDp7Il9hdXRoX3VzZXJfaWQiOiIxNCIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiYWFlY2IyMjU0NmM3Mjk5YTk2MDMxMDg1NmJlZGJjZTI2YmZhMjUyNyJ9",
+        "expire_date": "2020-01-06T00:06:11.856Z"
     }
 }, {
-    "model": "auth.permission",
-    "pk": 30,
+    "model": "sessions.session",
+    "pk": "ey3dyv531rdsludj8l4ydge97ud63jxs",
     "fields": {
-        "name": "Can change artifact",
-        "content_type": 8,
-        "codename": "change_artifact"
+        "session_data": "YWRhOTg5ODkxNjljMTljN2E3MTg1ZDFiODdiZTczYjI2ZmI0N2VhNTp7Il9hdXRoX3VzZXJfaWQiOiIxNiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiYWMwMzY3MjY2NTU3YzgzNjg2Mjg3ZDFmMWU1YWEzOTdhYjM5ZjllYiJ9",
+        "expire_date": "2020-01-06T00:04:07.388Z"
     }
 }, {
-    "model": "auth.permission",
-    "pk": 31,
+    "model": "sessions.session",
+    "pk": "lhr38krvqe9nqli1sl3beh4ctt058nv0",
     "fields": {
-        "name": "Can delete artifact",
-        "content_type": 8,
-        "codename": "delete_artifact"
+        "session_data": "NzM3YzA2OWRlODAxMmUwZWQ1OTVjYmIxYTZiZDAyMTVlNGJlYjNkYjp7Il9hdXRoX3VzZXJfaWQiOiIxMiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiMDUwMjQ3MmM4ZTkzMmFhMjhmMjM4ODJlNDY5NGIzNGVmNzc2ZTBlZSJ9",
+        "expire_date": "2020-01-05T23:55:29.538Z"
     }
 }, {
-    "model": "auth.permission",
-    "pk": 32,
+    "model": "sessions.session",
+    "pk": "mhwlcyv0kudox7y4faugk4zi5whisjnj",
     "fields": {
-        "name": "Can view artifact",
-        "content_type": 8,
-        "codename": "view_artifact"
+        "session_data": "NzM3YzA2OWRlODAxMmUwZWQ1OTVjYmIxYTZiZDAyMTVlNGJlYjNkYjp7Il9hdXRoX3VzZXJfaWQiOiIxMiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiMDUwMjQ3MmM4ZTkzMmFhMjhmMjM4ODJlNDY5NGIzNGVmNzc2ZTBlZSJ9",
+        "expire_date": "2020-01-06T00:15:30.136Z"
     }
 }, {
     "model": "auth.permission",
-    "pk": 33,
+    "pk": 57,
     "fields": {
         "name": "Can add game",
-        "content_type": 9,
+        "content_type": 15,
         "codename": "add_game"
     }
 }, {
     "model": "auth.permission",
-    "pk": 34,
+    "pk": 58,
     "fields": {
         "name": "Can change game",
-        "content_type": 9,
+        "content_type": 15,
         "codename": "change_game"
     }
 }, {
     "model": "auth.permission",
-    "pk": 35,
+    "pk": 59,
     "fields": {
         "name": "Can delete game",
-        "content_type": 9,
+        "content_type": 15,
         "codename": "delete_game"
     }
 }, {
     "model": "auth.permission",
-    "pk": 36,
+    "pk": 60,
     "fields": {
         "name": "Can view game",
-        "content_type": 9,
+        "content_type": 15,
         "codename": "view_game"
     }
 }, {
     "model": "auth.permission",
-    "pk": 37,
+    "pk": 61,
     "fields": {
-        "name": "Can add action",
-        "content_type": 10,
-        "codename": "add_action"
+        "name": "Can add player",
+        "content_type": 16,
+        "codename": "add_player"
     }
 }, {
     "model": "auth.permission",
-    "pk": 38,
+    "pk": 62,
     "fields": {
-        "name": "Can change action",
-        "content_type": 10,
-        "codename": "change_action"
+        "name": "Can change player",
+        "content_type": 16,
+        "codename": "change_player"
     }
 }, {
     "model": "auth.permission",
-    "pk": 39,
+    "pk": 63,
     "fields": {
-        "name": "Can delete action",
-        "content_type": 10,
-        "codename": "delete_action"
+        "name": "Can delete player",
+        "content_type": 16,
+        "codename": "delete_player"
     }
 }, {
     "model": "auth.permission",
-    "pk": 40,
+    "pk": 64,
     "fields": {
-        "name": "Can view action",
-        "content_type": 10,
-        "codename": "view_action"
+        "name": "Can view player",
+        "content_type": 16,
+        "codename": "view_player"
     }
 }, {
     "model": "auth.permission",
-    "pk": 41,
-    "fields": {
-        "name": "Can add cell",
-        "content_type": 11,
-        "codename": "add_cell"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 42,
-    "fields": {
-        "name": "Can change cell",
-        "content_type": 11,
-        "codename": "change_cell"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 43,
-    "fields": {
-        "name": "Can delete cell",
-        "content_type": 11,
-        "codename": "delete_cell"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 44,
-    "fields": {
-        "name": "Can view cell",
-        "content_type": 11,
-        "codename": "view_cell"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 45,
-    "fields": {
-        "name": "Can add game log",
-        "content_type": 12,
-        "codename": "add_gamelog"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 46,
-    "fields": {
-        "name": "Can change game log",
-        "content_type": 12,
-        "codename": "change_gamelog"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 47,
-    "fields": {
-        "name": "Can delete game log",
-        "content_type": 12,
-        "codename": "delete_gamelog"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 48,
-    "fields": {
-        "name": "Can view game log",
-        "content_type": 12,
-        "codename": "view_gamelog"
-    }
-}, {
-    "model": "auth.permission",
-    "pk": 49,
+    "pk": 65,
     "fields": {
         "name": "Can add action name",
-        "content_type": 13,
+        "content_type": 17,
         "codename": "add_actionname"
     }
 }, {
     "model": "auth.permission",
-    "pk": 50,
+    "pk": 66,
     "fields": {
         "name": "Can change action name",
-        "content_type": 13,
+        "content_type": 17,
         "codename": "change_actionname"
     }
 }, {
     "model": "auth.permission",
-    "pk": 51,
+    "pk": 67,
     "fields": {
         "name": "Can delete action name",
-        "content_type": 13,
+        "content_type": 17,
         "codename": "delete_actionname"
     }
 }, {
     "model": "auth.permission",
-    "pk": 52,
+    "pk": 68,
     "fields": {
         "name": "Can view action name",
-        "content_type": 13,
+        "content_type": 17,
         "codename": "view_actionname"
     }
 }, {
-    "model": "auth.user",
-    "pk": 1,
+    "model": "auth.permission",
+    "pk": 69,
     "fields": {
-        "password": "pbkdf2_sha256$120000$W1KNEJ67ArUs$wi9j6hiMAI0nOUMAer/ifs/rA39JH93gaQdiB9rRtTU=",
-        "last_login": "2019-12-22T06:52:25.443Z",
-        "is_superuser": true,
-        "username": "admin",
-        "first_name": "",
-        "last_name": "",
-        "email": "admin@gmail.com",
-        "is_staff": true,
-        "is_active": true,
-        "date_joined": "2019-12-21T20:13:40.388Z",
-        "groups": [],
-        "user_permissions": []
+        "name": "Can add action",
+        "content_type": 18,
+        "codename": "add_action"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 70,
+    "fields": {
+        "name": "Can change action",
+        "content_type": 18,
+        "codename": "change_action"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 71,
+    "fields": {
+        "name": "Can delete action",
+        "content_type": 18,
+        "codename": "delete_action"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 72,
+    "fields": {
+        "name": "Can view action",
+        "content_type": 18,
+        "codename": "view_action"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 73,
+    "fields": {
+        "name": "Can add card",
+        "content_type": 19,
+        "codename": "add_card"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 74,
+    "fields": {
+        "name": "Can change card",
+        "content_type": 19,
+        "codename": "change_card"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 75,
+    "fields": {
+        "name": "Can delete card",
+        "content_type": 19,
+        "codename": "delete_card"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 76,
+    "fields": {
+        "name": "Can view card",
+        "content_type": 19,
+        "codename": "view_card"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 77,
+    "fields": {
+        "name": "Can add artifact",
+        "content_type": 20,
+        "codename": "add_artifact"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 78,
+    "fields": {
+        "name": "Can change artifact",
+        "content_type": 20,
+        "codename": "change_artifact"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 79,
+    "fields": {
+        "name": "Can delete artifact",
+        "content_type": 20,
+        "codename": "delete_artifact"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 80,
+    "fields": {
+        "name": "Can view artifact",
+        "content_type": 20,
+        "codename": "view_artifact"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 81,
+    "fields": {
+        "name": "Can add cell",
+        "content_type": 21,
+        "codename": "add_cell"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 82,
+    "fields": {
+        "name": "Can change cell",
+        "content_type": 21,
+        "codename": "change_cell"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 83,
+    "fields": {
+        "name": "Can delete cell",
+        "content_type": 21,
+        "codename": "delete_cell"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 84,
+    "fields": {
+        "name": "Can view cell",
+        "content_type": 21,
+        "codename": "view_cell"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 85,
+    "fields": {
+        "name": "Can add game log",
+        "content_type": 22,
+        "codename": "add_gamelog"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 86,
+    "fields": {
+        "name": "Can change game log",
+        "content_type": 22,
+        "codename": "change_gamelog"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 87,
+    "fields": {
+        "name": "Can delete game log",
+        "content_type": 22,
+        "codename": "delete_gamelog"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 88,
+    "fields": {
+        "name": "Can view game log",
+        "content_type": 22,
+        "codename": "view_gamelog"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 89,
+    "fields": {
+        "name": "Can add log entry",
+        "content_type": 23,
+        "codename": "add_logentry"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 90,
+    "fields": {
+        "name": "Can change log entry",
+        "content_type": 23,
+        "codename": "change_logentry"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 91,
+    "fields": {
+        "name": "Can delete log entry",
+        "content_type": 23,
+        "codename": "delete_logentry"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 92,
+    "fields": {
+        "name": "Can view log entry",
+        "content_type": 23,
+        "codename": "view_logentry"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 93,
+    "fields": {
+        "name": "Can add permission",
+        "content_type": 24,
+        "codename": "add_permission"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 94,
+    "fields": {
+        "name": "Can change permission",
+        "content_type": 24,
+        "codename": "change_permission"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 95,
+    "fields": {
+        "name": "Can delete permission",
+        "content_type": 24,
+        "codename": "delete_permission"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 96,
+    "fields": {
+        "name": "Can view permission",
+        "content_type": 24,
+        "codename": "view_permission"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 97,
+    "fields": {
+        "name": "Can add group",
+        "content_type": 25,
+        "codename": "add_group"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 98,
+    "fields": {
+        "name": "Can change group",
+        "content_type": 25,
+        "codename": "change_group"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 99,
+    "fields": {
+        "name": "Can delete group",
+        "content_type": 25,
+        "codename": "delete_group"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 100,
+    "fields": {
+        "name": "Can view group",
+        "content_type": 25,
+        "codename": "view_group"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 101,
+    "fields": {
+        "name": "Can add user",
+        "content_type": 26,
+        "codename": "add_user"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 102,
+    "fields": {
+        "name": "Can change user",
+        "content_type": 26,
+        "codename": "change_user"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 103,
+    "fields": {
+        "name": "Can delete user",
+        "content_type": 26,
+        "codename": "delete_user"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 104,
+    "fields": {
+        "name": "Can view user",
+        "content_type": 26,
+        "codename": "view_user"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 105,
+    "fields": {
+        "name": "Can add content type",
+        "content_type": 27,
+        "codename": "add_contenttype"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 106,
+    "fields": {
+        "name": "Can change content type",
+        "content_type": 27,
+        "codename": "change_contenttype"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 107,
+    "fields": {
+        "name": "Can delete content type",
+        "content_type": 27,
+        "codename": "delete_contenttype"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 108,
+    "fields": {
+        "name": "Can view content type",
+        "content_type": 27,
+        "codename": "view_contenttype"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 109,
+    "fields": {
+        "name": "Can add session",
+        "content_type": 28,
+        "codename": "add_session"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 110,
+    "fields": {
+        "name": "Can change session",
+        "content_type": 28,
+        "codename": "change_session"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 111,
+    "fields": {
+        "name": "Can delete session",
+        "content_type": 28,
+        "codename": "delete_session"
+    }
+}, {
+    "model": "auth.permission",
+    "pk": 112,
+    "fields": {
+        "name": "Can view session",
+        "content_type": 28,
+        "codename": "view_session"
     }
 }, {
     "model": "auth.user",
-    "pk": 2,
+    "pk": 12,
     "fields": {
-        "password": "pbkdf2_sha256$120000$dqhVhXnwJAZg$NJE6kiFU6E2O28Q1KeqO/CprMgb4oqt3G6QfvuIwFso=",
-        "last_login": "2019-12-21T21:41:26.227Z",
-        "is_superuser": false,
-        "username": "user",
-        "first_name": "",
-        "last_name": "",
-        "email": "user@gmail.com",
-        "is_staff": false,
-        "is_active": true,
-        "date_joined": "2019-12-21T21:41:12.012Z",
-        "groups": [],
-        "user_permissions": []
-    }
-}, {
-    "model": "auth.user",
-    "pk": 3,
-    "fields": {
-        "password": "pbkdf2_sha256$120000$iXTyzATRRdvs$UWkzhL5KK6QLv2V/znzUSLx7FTZIC8FDIT8M198ZWmc=",
-        "last_login": "2019-12-22T01:48:25.924Z",
-        "is_superuser": false,
-        "username": "onur",
-        "first_name": "",
-        "last_name": "",
-        "email": "onur.aydin.3@hotmail.com",
-        "is_staff": false,
-        "is_active": true,
-        "date_joined": "2019-12-22T01:48:24.037Z",
-        "groups": [],
-        "user_permissions": []
-    }
-}, {
-    "model": "auth.user",
-    "pk": 4,
-    "fields": {
-        "password": "pbkdf2_sha256$120000$nsiN0HpdfSYy$ySCKKbUJRLR4DF1emPghrfkptyd0MmE0ePJzb8eb1/0=",
-        "last_login": "2019-12-22T03:18:46.481Z",
+        "password": "pbkdf2_sha256$120000$HTzKzGnJDqZ6$ciwT7RqEAQmqcnNVbF17O6tG3pQxyLy51hnwnL8s7nA=",
+        "last_login": "2019-12-23T00:15:30.133Z",
         "is_superuser": true,
         "username": "root",
         "first_name": "",
         "last_name": "",
-        "email": "",
+        "email": "root@email.com",
         "is_staff": true,
         "is_active": true,
-        "date_joined": "2019-12-22T03:18:06.205Z",
+        "date_joined": "2019-12-22T21:49:24.447Z",
+        "groups": [],
+        "user_permissions": []
+    }
+}, {
+    "model": "auth.user",
+    "pk": 13,
+    "fields": {
+        "password": "pbkdf2_sha256$120000$hEJfPVeU8kLy$nP7KD0Wvr3b3K7tVPj2YZgXgZIshKD/8av9zrWwPclQ=",
+        "last_login": "2019-12-23T00:00:53.196Z",
+        "is_superuser": false,
+        "username": "ilker",
+        "first_name": "",
+        "last_name": "",
+        "email": "ilker@gmail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2019-12-22T23:33:07.728Z",
+        "groups": [],
+        "user_permissions": []
+    }
+}, {
+    "model": "auth.user",
+    "pk": 14,
+    "fields": {
+        "password": "pbkdf2_sha256$120000$SjnZ0Go2uV9M$lUVSLKDz9tJk/1Mvr3vDyM3/FKx1GKDeal2D6A+lMVE=",
+        "last_login": "2019-12-23T00:06:11.853Z",
+        "is_superuser": false,
+        "username": "ilker1",
+        "first_name": "",
+        "last_name": "",
+        "email": "ilker1@gmail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2019-12-22T23:33:40.762Z",
+        "groups": [],
+        "user_permissions": []
+    }
+}, {
+    "model": "auth.user",
+    "pk": 15,
+    "fields": {
+        "password": "pbkdf2_sha256$120000$5K9dLE3f7aFA$GxhW4WV0xGAXYEikwWzgvtO1h8SDwIMIS4sCVu7csTQ=",
+        "last_login": "2019-12-22T23:52:05.060Z",
+        "is_superuser": false,
+        "username": "onur1",
+        "first_name": "",
+        "last_name": "",
+        "email": "onur@onur.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2019-12-22T23:33:50.014Z",
+        "groups": [],
+        "user_permissions": []
+    }
+}, {
+    "model": "auth.user",
+    "pk": 16,
+    "fields": {
+        "password": "pbkdf2_sha256$120000$Y9LK5Bk26aup$h+z9jGUk+pv00YayrUc/z9utrMh+SRA7mu1yVwK8yPs=",
+        "last_login": "2019-12-23T00:04:07.386Z",
+        "is_superuser": false,
+        "username": "onur2",
+        "first_name": "",
+        "last_name": "",
+        "email": "onur2@onur2.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2019-12-22T23:34:15.858Z",
         "groups": [],
         "user_permissions": []
     }
 }, {
     "model": "admin.logentry",
-    "pk": 1,
+    "pk": 72,
     "fields": {
-        "action_time": "2019-12-22T03:49:24.051Z",
-        "user": 4,
-        "content_type": 9,
-        "object_id": "1",
-        "object_repr": "Game id: 1, Game name: firstGame",
+        "action_time": "2019-12-22T23:15:56.329Z",
+        "user": 12,
+        "content_type": 17,
+        "object_id": "7",
+        "object_repr": "jumpA",
         "action_flag": 1,
         "change_message": "[{\"added\": {}}]"
     }
 }, {
     "model": "admin.logentry",
-    "pk": 2,
+    "pk": 73,
     "fields": {
-        "action_time": "2019-12-22T05:22:20.044Z",
-        "user": 4,
-        "content_type": 9,
-        "object_id": "1",
-        "object_repr": "Game id: 1, Game name: firstGame",
-        "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"is_cycle_enabled\", \"cycle_value\"]}}]"
-    }
-}, {
-    "model": "admin.logentry",
-    "pk": 3,
-    "fields": {
-        "action_time": "2019-12-22T05:29:20.876Z",
-        "user": 4,
-        "content_type": 9,
-        "object_id": "1",
-        "object_repr": "Game id: 1, Game name: firstGame",
-        "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"termination_condition\", \"termination_value\"]}}]"
-    }
-}, {
-    "model": "admin.logentry",
-    "pk": 4,
-    "fields": {
-        "action_time": "2019-12-22T05:42:48.974Z",
-        "user": 4,
-        "content_type": 10,
-        "object_id": "1",
-        "object_repr": "Action object (1)",
+        "action_time": "2019-12-22T23:16:05.843Z",
+        "user": 12,
+        "content_type": 17,
+        "object_id": "8",
+        "object_repr": "skip",
         "action_flag": 1,
         "change_message": "[{\"added\": {}}]"
     }
 }, {
     "model": "admin.logentry",
-    "pk": 5,
+    "pk": 74,
     "fields": {
-        "action_time": "2019-12-22T05:54:22.870Z",
-        "user": 4,
-        "content_type": 13,
-        "object_id": "1",
-        "object_repr": "ActionName object (1)",
+        "action_time": "2019-12-22T23:16:08.863Z",
+        "user": 12,
+        "content_type": 17,
+        "object_id": "9",
+        "object_repr": "jumpR",
         "action_flag": 1,
         "change_message": "[{\"added\": {}}]"
     }
 }, {
     "model": "admin.logentry",
-    "pk": 6,
+    "pk": 75,
     "fields": {
-        "action_time": "2019-12-22T05:54:29.432Z",
-        "user": 4,
-        "content_type": 13,
-        "object_id": "2",
-        "object_repr": "ActionName object (2)",
+        "action_time": "2019-12-22T23:16:14.653Z",
+        "user": 12,
+        "content_type": 17,
+        "object_id": "10",
+        "object_repr": "pay",
         "action_flag": 1,
         "change_message": "[{\"added\": {}}]"
     }
 }, {
     "model": "admin.logentry",
-    "pk": 7,
+    "pk": 76,
     "fields": {
-        "action_time": "2019-12-22T05:54:41.756Z",
-        "user": 4,
-        "content_type": 13,
-        "object_id": "3",
-        "object_repr": "ActionName object (3)",
+        "action_time": "2019-12-22T23:16:16.188Z",
+        "user": 12,
+        "content_type": 17,
+        "object_id": "11",
+        "object_repr": "drop",
         "action_flag": 1,
         "change_message": "[{\"added\": {}}]"
     }
 }, {
     "model": "admin.logentry",
-    "pk": 8,
+    "pk": 77,
     "fields": {
-        "action_time": "2019-12-22T05:54:47.470Z",
-        "user": 4,
-        "content_type": 13,
-        "object_id": "4",
-        "object_repr": "ActionName object (4)",
+        "action_time": "2019-12-22T23:16:20.602Z",
+        "user": 12,
+        "content_type": 17,
+        "object_id": "12",
+        "object_repr": "add",
         "action_flag": 1,
         "change_message": "[{\"added\": {}}]"
     }
 }, {
     "model": "admin.logentry",
-    "pk": 9,
+    "pk": 78,
     "fields": {
-        "action_time": "2019-12-22T05:54:52.917Z",
-        "user": 4,
-        "content_type": 13,
-        "object_id": "5",
-        "object_repr": "ActionName object (5)",
+        "action_time": "2019-12-22T23:16:31.229Z",
+        "user": 12,
+        "content_type": 17,
+        "object_id": "13",
+        "object_repr": "drawcard",
         "action_flag": 1,
         "change_message": "[{\"added\": {}}]"
     }
 }, {
     "model": "admin.logentry",
-    "pk": 10,
+    "pk": 79,
     "fields": {
-        "action_time": "2019-12-22T05:54:57.783Z",
-        "user": 4,
-        "content_type": 13,
+        "action_time": "2019-12-22T23:16:48.275Z",
+        "user": 12,
+        "content_type": 18,
         "object_id": "6",
-        "object_repr": "ActionName object (6)",
+        "object_repr": "Action: drop, with value : 20",
         "action_flag": 1,
         "change_message": "[{\"added\": {}}]"
     }
 }, {
     "model": "admin.logentry",
-    "pk": 11,
+    "pk": 80,
     "fields": {
-        "action_time": "2019-12-22T05:56:39.963Z",
-        "user": 4,
-        "content_type": 10,
+        "action_time": "2019-12-22T23:17:01.543Z",
+        "user": 12,
+        "content_type": 18,
+        "object_id": "7",
+        "object_repr": "Action: drop, with value : 40",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}, {
+    "model": "admin.logentry",
+    "pk": 81,
+    "fields": {
+        "action_time": "2019-12-22T23:17:21.869Z",
+        "user": 12,
+        "content_type": 18,
+        "object_id": "8",
+        "object_repr": "Action: jumpR, with value : 2",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}, {
+    "model": "admin.logentry",
+    "pk": 82,
+    "fields": {
+        "action_time": "2019-12-22T23:17:28.173Z",
+        "user": 12,
+        "content_type": 18,
+        "object_id": "9",
+        "object_repr": "Action: drawcard, with value : 0",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}, {
+    "model": "admin.logentry",
+    "pk": 83,
+    "fields": {
+        "action_time": "2019-12-22T23:17:33.312Z",
+        "user": 12,
+        "content_type": 18,
+        "object_id": "10",
+        "object_repr": "Action: jumpA, with value : 1",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}, {
+    "model": "admin.logentry",
+    "pk": 84,
+    "fields": {
+        "action_time": "2019-12-22T23:17:43.491Z",
+        "user": 12,
+        "content_type": 18,
+        "object_id": "11",
+        "object_repr": "Action: add, with value : 20",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}, {
+    "model": "admin.logentry",
+    "pk": 85,
+    "fields": {
+        "action_time": "2019-12-22T23:17:52.815Z",
+        "user": 12,
+        "content_type": 18,
+        "object_id": "12",
+        "object_repr": "Action: pay, with value : 50",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}, {
+    "model": "admin.logentry",
+    "pk": 86,
+    "fields": {
+        "action_time": "2019-12-22T23:18:24.237Z",
+        "user": 12,
+        "content_type": 19,
+        "object_id": "7",
+        "object_repr": "The card 7 has the Action: drop, with value : 20",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}, {
+    "model": "admin.logentry",
+    "pk": 87,
+    "fields": {
+        "action_time": "2019-12-22T23:18:32.612Z",
+        "user": 12,
+        "content_type": 19,
+        "object_id": "8",
+        "object_repr": "The card 8 has the Action: jumpR, with value : 2",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}, {
+    "model": "admin.logentry",
+    "pk": 88,
+    "fields": {
+        "action_time": "2019-12-22T23:18:43.501Z",
+        "user": 12,
+        "content_type": 19,
+        "object_id": "9",
+        "object_repr": "The card 9 has the Action: pay, with value : 50",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}, {
+    "model": "admin.logentry",
+    "pk": 89,
+    "fields": {
+        "action_time": "2019-12-22T23:19:25.207Z",
+        "user": 12,
+        "content_type": 19,
+        "object_id": "10",
+        "object_repr": "The card 10 has the Action: jumpA, with value : 1",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}, {
+    "model": "admin.logentry",
+    "pk": 90,
+    "fields": {
+        "action_time": "2019-12-22T23:19:41.105Z",
+        "user": 12,
+        "content_type": 19,
+        "object_id": "11",
+        "object_repr": "The card 11 has the Action: add, with value : 20",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}, {
+    "model": "admin.logentry",
+    "pk": 91,
+    "fields": {
+        "action_time": "2019-12-22T23:23:21.774Z",
+        "user": 12,
+        "content_type": 15,
         "object_id": "1",
-        "object_repr": "Action object (1)",
+        "object_repr": "Game id: 1, Game name: game2",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}, {
+    "model": "admin.logentry",
+    "pk": 92,
+    "fields": {
+        "action_time": "2019-12-22T23:23:23.913Z",
+        "user": 12,
+        "content_type": 15,
+        "object_id": "2",
+        "object_repr": "Game id: 2, Game name: game1",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}, {
+    "model": "admin.logentry",
+    "pk": 93,
+    "fields": {
+        "action_time": "2019-12-22T23:23:42.894Z",
+        "user": 12,
+        "content_type": 15,
+        "object_id": "2",
+        "object_repr": "Game id: 2, Game name: game2",
         "action_flag": 2,
         "change_message": "[{\"changed\": {\"fields\": [\"name\"]}}]"
     }
 }, {
     "model": "admin.logentry",
-    "pk": 12,
+    "pk": 94,
     "fields": {
-        "action_time": "2019-12-22T05:56:59.538Z",
-        "user": 4,
-        "content_type": 10,
-        "object_id": "2",
-        "object_repr": "Action object (2)",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-}, {
-    "model": "admin.logentry",
-    "pk": 13,
-    "fields": {
-        "action_time": "2019-12-22T06:09:38.760Z",
-        "user": 4,
-        "content_type": 10,
-        "object_id": "3",
-        "object_repr": "Action : jumA, with value : 0",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-}, {
-    "model": "admin.logentry",
-    "pk": 14,
-    "fields": {
-        "action_time": "2019-12-22T06:09:52.451Z",
-        "user": 4,
-        "content_type": 10,
-        "object_id": "4",
-        "object_repr": "Action : pay, with value : 0",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-}, {
-    "model": "admin.logentry",
-    "pk": 15,
-    "fields": {
-        "action_time": "2019-12-22T06:11:36.528Z",
-        "user": 4,
-        "content_type": 8,
+        "action_time": "2019-12-22T23:23:49.867Z",
+        "user": 12,
+        "content_type": 15,
         "object_id": "1",
-        "object_repr": "Artifact object (1)",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
+        "object_repr": "Game id: 1, Game name: game1",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"name\"]}}]"
     }
 }, {
     "model": "admin.logentry",
-    "pk": 16,
+    "pk": 95,
     "fields": {
-        "action_time": "2019-12-22T06:12:32.139Z",
-        "user": 4,
-        "content_type": 8,
-        "object_id": "2",
-        "object_repr": "Artifact object (2)",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-}, {
-    "model": "admin.logentry",
-    "pk": 17,
-    "fields": {
-        "action_time": "2019-12-22T08:30:01.462Z",
-        "user": 1,
-        "content_type": 10,
+        "action_time": "2019-12-22T23:24:21.033Z",
+        "user": 12,
+        "content_type": 20,
         "object_id": "5",
-        "object_repr": "Action: jumA, with value : 0",
+        "object_repr": "Artifact: haydar, with price: 10 not owned",
         "action_flag": 1,
         "change_message": "[{\"added\": {}}]"
     }
 }, {
     "model": "admin.logentry",
-    "pk": 18,
+    "pk": 96,
     "fields": {
-        "action_time": "2019-12-22T09:03:44.184Z",
-        "user": 1,
-        "content_type": 7,
-        "object_id": "1",
-        "object_repr": "Player object (1)",
+        "action_time": "2019-12-22T23:24:22.078Z",
+        "user": 12,
+        "content_type": 20,
+        "object_id": "6",
+        "object_repr": "Artifact: firstArtifact, with price: 50 not owned, and has Action: jumpA, with value : 1",
         "action_flag": 1,
         "change_message": "[{\"added\": {}}]"
     }
 }, {
     "model": "admin.logentry",
-    "pk": 19,
+    "pk": 97,
     "fields": {
-        "action_time": "2019-12-22T09:04:13.844Z",
-        "user": 1,
-        "content_type": 7,
-        "object_id": "2",
-        "object_repr": "Player object (2)",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
+        "action_time": "2019-12-22T23:24:45.985Z",
+        "user": 12,
+        "content_type": 20,
+        "object_id": "5",
+        "object_repr": "Artifact: haydartifact, with price: 10 not owned",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"name\"]}}]"
     }
 }, {
     "model": "admin.logentry",
-    "pk": 20,
+    "pk": 98,
     "fields": {
-        "action_time": "2019-12-22T09:04:43.026Z",
-        "user": 1,
-        "content_type": 12,
-        "object_id": "1",
-        "object_repr": "LOG of Game id: 1, Game name: firstGame",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-}, {
-    "model": "admin.logentry",
-    "pk": 21,
-    "fields": {
-        "action_time": "2019-12-22T09:05:46.303Z",
-        "user": 1,
-        "content_type": 11,
-        "object_id": "1",
-        "object_repr": "Cell object (1)",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-}, {
-    "model": "admin.logentry",
-    "pk": 22,
-    "fields": {
-        "action_time": "2019-12-22T09:06:27.333Z",
-        "user": 1,
-        "content_type": 11,
-        "object_id": "2",
-        "object_repr": "Cell object (2)",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-}, {
-    "model": "admin.logentry",
-    "pk": 23,
-    "fields": {
-        "action_time": "2019-12-22T09:07:39.809Z",
-        "user": 1,
-        "content_type": 11,
+        "action_time": "2019-12-22T23:25:49.918Z",
+        "user": 12,
+        "content_type": 21,
         "object_id": "3",
-        "object_repr": "Cell object (3)",
+        "object_repr": "0. cell0, Action: jumpR, with value : 2",
         "action_flag": 1,
         "change_message": "[{\"added\": {}}]"
     }
 }, {
-    "model": "game.gamelog",
+    "model": "admin.logentry",
+    "pk": 99,
+    "fields": {
+        "action_time": "2019-12-22T23:26:01.746Z",
+        "user": 12,
+        "content_type": 21,
+        "object_id": "4",
+        "object_repr": "0. game2 ilk, Action: add, with value : 20",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}, {
+    "model": "admin.logentry",
+    "pk": 100,
+    "fields": {
+        "action_time": "2019-12-22T23:26:26.834Z",
+        "user": 12,
+        "content_type": 21,
+        "object_id": "5",
+        "object_repr": "1. cell1, Action: add, with value : 20, Artifact: haydartifact, with price: 10 not owned",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}, {
+    "model": "admin.logentry",
+    "pk": 101,
+    "fields": {
+        "action_time": "2019-12-22T23:26:47.925Z",
+        "user": 12,
+        "content_type": 21,
+        "object_id": "6",
+        "object_repr": "1. ikinci, Artifact: firstArtifact, with price: 50 not owned, and has Action: jumpA, with value : 1",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}, {
+    "model": "admin.logentry",
+    "pk": 102,
+    "fields": {
+        "action_time": "2019-12-22T23:27:06.985Z",
+        "user": 12,
+        "content_type": 21,
+        "object_id": "7",
+        "object_repr": "2. cell2, Action: jumpR, with value : 2",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}, {
+    "model": "admin.logentry",
+    "pk": 103,
+    "fields": {
+        "action_time": "2019-12-22T23:27:30.726Z",
+        "user": 12,
+        "content_type": 21,
+        "object_id": "8",
+        "object_repr": "3. cell3, Artifact: firstArtifact, with price: 50 not owned, and has Action: jumpA, with value : 1",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}, {
+    "model": "admin.logentry",
+    "pk": 104,
+    "fields": {
+        "action_time": "2019-12-22T23:27:43.230Z",
+        "user": 12,
+        "content_type": 21,
+        "object_id": "9",
+        "object_repr": "2. gg, Action: drawcard, with value : 0",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}, {
+    "model": "admin.logentry",
+    "pk": 105,
+    "fields": {
+        "action_time": "2019-12-22T23:27:47.702Z",
+        "user": 12,
+        "content_type": 21,
+        "object_id": "10",
+        "object_repr": "4. cell4",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}, {
+    "model": "admin.logentry",
+    "pk": 106,
+    "fields": {
+        "action_time": "2019-12-22T23:28:11.742Z",
+        "user": 12,
+        "content_type": 21,
+        "object_id": "11",
+        "object_repr": "3. hadi, Action: jumpA, with value : 1",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}, {
+    "model": "admin.logentry",
+    "pk": 107,
+    "fields": {
+        "action_time": "2019-12-22T23:29:02.666Z",
+        "user": 12,
+        "content_type": 21,
+        "object_id": "12",
+        "object_repr": "4. sona dogru, Action: jumpR, with value : 2, Artifact: firstArtifact, with price: 50 not owned, and has Action: jumpA, with value : 1",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}, {
+    "model": "admin.logentry",
+    "pk": 108,
+    "fields": {
+        "action_time": "2019-12-22T23:29:23.042Z",
+        "user": 12,
+        "content_type": 21,
+        "object_id": "13",
+        "object_repr": "5. finall",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}, {
+    "model": "game.player",
     "pk": 1,
     "fields": {
+        "name": "ilker",
         "game": 1,
-        "message": "dummy message",
-        "player": 3,
-        "created": "2019-12-22T09:04:43.025Z",
-        "modified": "2019-12-22T09:04:43.025Z"
+        "skip_left_round": 0,
+        "credits": 100,
+        "current_cell": 0,
+        "user": 13,
+        "is_ready": true,
+        "next_available_move": "roll",
+        "artifact_count": 0,
+        "cycle_count": 0
+    }
+}, {
+    "model": "game.player",
+    "pk": 2,
+    "fields": {
+        "name": "ilker1",
+        "game": 2,
+        "skip_left_round": 0,
+        "credits": 100,
+        "current_cell": 0,
+        "user": 14,
+        "is_ready": true,
+        "next_available_move": "roll",
+        "artifact_count": 0,
+        "cycle_count": 0
+    }
+}, {
+    "model": "game.player",
+    "pk": 3,
+    "fields": {
+        "name": "onur1",
+        "game": 1,
+        "skip_left_round": 0,
+        "credits": 100,
+        "current_cell": 0,
+        "user": 15,
+        "is_ready": true,
+        "next_available_move": "roll",
+        "artifact_count": 0,
+        "cycle_count": 0
+    }
+}, {
+    "model": "game.player",
+    "pk": 4,
+    "fields": {
+        "name": "onur2",
+        "game": 2,
+        "skip_left_round": 0,
+        "credits": 100,
+        "current_cell": 0,
+        "user": 16,
+        "is_ready": true,
+        "next_available_move": "roll",
+        "artifact_count": 0,
+        "cycle_count": 0
     }
 }, {
     "model": "game.game",
     "pk": 1,
     "fields": {
-        "name": "firstGame",
+        "name": "game1",
         "dice": 3,
         "is_cycle_enabled": true,
-        "cycle_value": 2,
+        "cycle_value": 10,
         "credit": 100,
-        "current_player_id": 0,
+        "current_player_id": -1,
         "current_round": 0,
         "winner": null,
-        "game_ended": null,
-        "created": "2019-12-22T03:49:24.050Z",
-        "modified": "2019-12-22T05:29:20.874Z",
+        "game_ended": false,
+        "created": "2019-12-22T23:23:21.774Z",
+        "modified": "2019-12-22T23:53:09.649Z",
         "termination_condition": "round",
-        "termination_value": 5,
+        "termination_value": 3,
         "ready_player_count": 0,
-        "player_count": 0,
-        "game_status": "0"
+        "player_count": 2,
+        "game_status": "initial game",
+        "cell_count": 0
+    }
+}, {
+    "model": "game.game",
+    "pk": 2,
+    "fields": {
+        "name": "game2",
+        "dice": 3,
+        "is_cycle_enabled": true,
+        "cycle_value": 0,
+        "credit": 100,
+        "current_player_id": 2,
+        "current_round": 0,
+        "winner": null,
+        "game_ended": false,
+        "created": "2019-12-22T23:23:23.913Z",
+        "modified": "2019-12-23T00:04:20.819Z",
+        "termination_condition": "first_collect",
+        "termination_value": 5,
+        "ready_player_count": 2,
+        "player_count": 2,
+        "game_status": "Game is started",
+        "cell_count": 6
     }
 }]

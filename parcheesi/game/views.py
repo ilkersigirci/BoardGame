@@ -45,6 +45,7 @@ def about(request):
 
 #######################################################################################
 
+    
 
 @login_required
 def join(request, game_id):
@@ -82,7 +83,6 @@ def ready(request, game_id):
     if player.is_ready == False:
         game.ready_player_count += 1
         player.is_ready = True
-        player.save()
     
     messages.success(request, f'You are ready for the game')
     
@@ -93,21 +93,22 @@ def ready(request, game_id):
         for pl in players:
             player_list.append(pl.id)
         player_list.sort()
-        game.current_player = player_list[0]
-        game.save()
+        game.current_player_id = player_list[0]
+        game.cell_count = len(game.getGameCells())
         
-        #TODO: current player index setle
         messages.warning(request, f'Game is Starting')
+
+    player.save()
+    game.save()
         
     return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
 
 
 @login_required
-def game_next(request, game_id):
+def game_next(request, game_id): #FIXME: round sonunda cycle ekle
 
     player = User.objects.get(username = request.user).player
-    game = player.game #TODO: buraya bakalim tekrardan
-    #current_player = game.getCurrentPlayer()
+    game = player.game
     current_player_id = game.current_player_id
 
     if current_player_id != player.pk:
@@ -117,82 +118,64 @@ def game_next(request, game_id):
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
     
-    if 'roll' in request.POST:
+    if(player.skip_left_round != 0):
+        log = game.addLog("You can't play in this round, you should wait for " + str(player.skip_left_round) + " to play",player )
+        player.skip_left_round -= 1
+        player.save()
+
+    elif 'roll' in request.POST:
         if player.next_available_move != "roll":
             msg = "You are in the " + player.next_available_move +" phase!"
             messages.warning(request, msg)
             return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
+       
+        diceRoll = random.randrange(game.dice) + 1
+        log = game.addLog("Dice rolled" + str(diceRoll),player ) #FIXME: iki kere log basiyor burada
+        actionName = ActionName.objects.get(pk=9) #TODO: jumpR foreign key is 9
+        action = Action(name=actionName, value=diceRoll)
+        game.takeAction(player, action)
+        game.save()
+        cell = game.cell_set.get(cell_index=player.current_cell)
+        if cell.artifact is not None:
+            player.next_available_move = "pick"
+            player.save()
         else:
-            diceRoll = random.randrange(game.dice) + 1
-            #TODO: state change
-            #stateChange["actions"].append({"dice roll ": diceRoll})
-            log = game.addLog("Dice rolled" + str(diceRoll),player )
-            action = Action("jumpR", diceRoll) #FIXME: burada foreign key gg olabilir
-            game.takeAction(player, action)
-            game.save()
-            cell = Cell.objects.get(cell_index=player.current_cell)
-            if cell.artifact is not None:
-                player.next_available_move = "pick"
-                player.save()
-            else:
-                player.next_available_move = "next"
-                player.save()
+            player.next_available_move = "next"
+            player.save()
     elif 'next' in request.POST:
         if player.next_available_move != "next":
             msg = "You are in the " + player.next_available_move +" phase!"
             messages.warning(request, msg)
             return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
+        player.next_available_move = "roll"
+        cell = game.cell_set.get(cell_index=player.current_cell)
+        if cell.action is not None:
+            game.takeAction(player, cell.action)
+            game.save()
         else:
-            cell = Cell.objects.get(cell_index=player.current_cell)
-            if cell.action is not None:
-                game.takeAction(player, cell.action)
-                game.save()
-            else:
-                pass
-
-            players = game.getGamePlayers()
-            player_list = []
-            next_player_id = 0
-            player_size = 0
-            for pl in players:
-                player_list.append(pl.id)
-                player_size+=1
-            player_list.sort()
-            for pl_index in range(0,player_size) :
-                if player.id == player_list[pl_index]:
-                    if pl_index == player_size-1:
-                        next_player_id = player_list[0]
-                    else:
-                        next_player_id = player_list[pl_index+1]
-                    
-
-
-                
-
-
+            pass
             
-        #roll the dice
+        """ players = game.getGamePlayers()
+        player_list = []
+        next_player_id = 0
+        player_size = 0
+        for pl in players:
+            player_list.append(pl.id)
+            player_size+=1
+        player_list.sort()
+        for pl_index in range(0,player_size) :
+            if player.id == player_list[pl_index]:
+                if pl_index == player_size-1:
+                    next_player_id = player_list[0]
+                else:
+                    next_player_id = player_list[pl_index+1]
 
-        
-    elif 'next' in request.POST:
-        if player.next_available_move != "next":
-            messages.warning(request, f'You must click to next button!')
-            return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
-        
-        #next
-        
-    
+        game.current_player_id = next_player_id
+        game.save() """
 
-
+        changePlayer(player, game)
+                    
     return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
-
-    """ student = User.objects.get(username = request.user).student
-    player = get request.user pleyari
-    game = playerin game objesi 
-    game.takeAction(player)
-    if action == roll <- bunu nerden cekcez
-          game.takeAction(player)
-    game.current_player = getNextPlayer """
 
 @login_required
 def pick(request, game_id):
@@ -215,23 +198,25 @@ def pick(request, game_id):
             return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
         
         #pick = True
-        player_cell = Cell.objects.get(cell_index=player.current_cell)
+        player_cell = game.cell_set.get(cell_index=player.current_cell)
 
         if player_cell.artifact.owned == True:
-            log = game.addLog("Artifact can't be selected, it is already owned" , player)            
+            log = game.addLog("Artifact can't be selected, it is already owned" , player)
+            changePlayer(player, game)            
             return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
             
-        if(player_cell.artifact.price >= 0 and player.credit >= player_cell.artifact.price):
+        if(player_cell.artifact.price >= 0 and player.credits >= player_cell.artifact.price):
             log = game.addLog("Artifact is successfully owned" , player)
             player_cell.artifact.owned = True        
             player_cell.artifact.player = player
+            player_cell.artifact.save()
             player.artifact_count += 1
 
             if player_cell.action == None:
                 log = game.addLog("There is no action in the cell" , player)
 
             else:
-                take_action_log = game.takeAction(player, player_cell.action)
+                game.takeAction(player, player_cell.action)
                 
                 #TODO: gameEnd conditionlari kontrol et
                 if game.game_ended == True:
@@ -242,12 +227,11 @@ def pick(request, game_id):
             
             #FIXME: artifact silmeyi kontrol et
             removed_artifact = player_cell.artifact
-            player_cell.artifact_set.remove(removed_artifact)
+            player_cell.artifact_set.remove(removed_artifact)        
         
-        player.save()
         game.save()
-        player_cell.save()
-        
+        player.save()
+        player_cell.save() 
             
     elif 'no_pick' in request.POST:
         if player.next_available_move != "pick":
@@ -256,12 +240,31 @@ def pick(request, game_id):
             return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
 
         #pick = False
-        log = game.addLog("Picked false, no action is taken" , player)          
-
+        log = game.addLog("Picked false, no action is taken" , player)
+         
+    changePlayer(player, game)
     return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
 
+@login_required
+def changePlayer(player, game):
+    players = game.getGamePlayers()
+    player_list = []
+    next_player_id = 0
+    player_size = 0
+    for pl in players:
+        player_list.append(pl.id)
+        player_size+=1
+    player_list.sort()
+    for pl_index in range(0,player_size):
+        if player.id == player_list[pl_index]:
+            if pl_index == player_size-1:
+                next_player_id = player_list[0]
+            else:
+                next_player_id = player_list[pl_index+1]
 
-
+    game.current_player_id = next_player_id
+    player.save()
+    game.save()
 
 
 @login_required

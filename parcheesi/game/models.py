@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
-
+import random
 
 class Game(models.Model):
     name = models.CharField(max_length=50)
@@ -22,6 +22,7 @@ class Game(models.Model):
     ready_player_count = models.IntegerField(default=0,null=True)
     player_count = models.IntegerField(default=0)
     game_status = models.CharField(max_length=30,default="initial game")
+    cell_count = models.IntegerField(default=0)
 
     def __str__(self):
         return "Game id: {}, Game name: {}".format(self.pk, self.name)
@@ -55,7 +56,9 @@ class Game(models.Model):
     def getGameLog(self):
         #return GameLog.objects.filter(game=self)
         return self.gamelog_set.all() #TODO: gamelog yazisini nasil olacak tekrardan bakmak lazim
-    
+        #reverseList = self.gamelog_set.all()
+        #return reverseList.sort(reverse=True)
+
     def getGamePlayers(self):
         #return Player.objects.filter(game=self)
         return self.player_set.all()
@@ -70,40 +73,102 @@ class Game(models.Model):
         return current_player
 
     def takeAction(self, current_player, action):
-        action_key = action.name
+        action_key = action.name.name
         action_value = action.value
-
+        message = "Empty Take Action Message with key: " + action_key + "value: " + str(action_value)
         if(action_key == "skip"):
-            current_player.skipLeftRound += action_value
-            message = "Player " + current_player.name + " skipped " + action_value
+            current_player.skip_left_round += action_value
+            message = "Player " + current_player.name + " skipped " + str(action_value)
+            #log = self.addLog(message , current_player)
+   
         elif(action_key == "drop"):
             current_player.credits -= action_value
-            message = "Player " + current_player.name + " has lost " + action_value + " credits"
+            message = "Player " + current_player.name + " has lost " + str(action_value) + " credits"
+            #log = self.addLog(message , current_player)
+
         elif(action_key == "add"):
             current_player.credits += action_value
-            message = "Player " + current_player.name + " got " + action_value + " credits"
+            message = "Player " + current_player.name + " got " + str(action_value) + " credits"
+            #log = self.addLog(message , current_player)
+
+        
         elif(action_key == "pay"):
-            paidPlayer = Player.objects.get(pk=action.player_id)
-            paidPlayer.credits += action_value
-            current_player.credits -= action_value
-            message = "Player " + current_player.name + " paid " + action_value + " to Player " +  paidPlayer.name
+            paid_player = Player.objects.get(pk=action.player_id)
+            paid_player.credits += action_value
+            current_player.credits -= action_value            
+            paid_player.save()
+            message = "Player " + current_player.name + " paid " + str(action_value) + " to Player " +  paid_player.name
+            #log = self.addLog(message , current_player)
+        
+        elif(action_key == "jumpA"):
+            current_player.current_cell = action_value
+            message = "Player " + current_player.name + " jump absolute " + str(action_value) + " and his current cell is " + str(current_player.current_cell)
+            #log = self.addLog(message , current_player)
+
+        elif(action_key == "jumpR"):
+            current_player.current_cell += action_value
+
+            
+            if self.is_cycle_enabled == True:
+                if current_player.current_cell >= self.cell_count:
+                    current_player.current_cell %= self.cell_count
+                    current_player.cycle_count += 1
+                elif current_player.current_cell <0:
+                    current_player.current_cell %= self.cell_count
+                    current_player.cycle_count -= 1
+            elif current_player.current_cell >= self.cell_count:
+                current_player.current_cell = self.cell_count-1
+            message = "Player " + current_player.name + " jump relative " + str(action_value) + " and his current cell is " + str(current_player.current_cell)
+            #log = self.addLog(message , current_player)
+
+        
+        elif(action_key == "drawcard"):
+            picked_card = random.choice(Card.objects.all())
+            picked_action = picked_card.action
+            message = "Player " + current_player.name + " drawed  the card: " + str(action_value) 
+            #log = self.addLog(message , current_player)
+            self.takeAction(current_player, picked_action)
+        
+        
+        current_player.save()
+        self.save()
+        
+        self.isGameEnded(current_player)
 
         log = self.addLog(message, player = self.getCurrentPlayer())
+        
+    def isGameEnded(self,player):
+        if(self.termination_condition == "round"):
+            if player.cycle_count >= self.termination_value:
+                self.game_ended = True
+                self.game_status = "game is ended"
+        elif(self.termination_condition == "finish"):
+            if player.cycle_count >= self.termination_value-1:
+                self.game_ended = True
+                self.game_status = "game is ended"
+        elif(self.termination_condition == "firstbroke"):
+            if player.cycle_count <= self.termination_value:
+                self.game_ended = True
+                self.game_status = "game is ended"
+        elif(self.termination_condition == "firstcollect"):
+            if player.cycle_count >= self.termination_value:
+                self.game_ended = True
+                self.game_status = "game is ended"
         self.save()
-        return log
-
+        
 
 class Player(models.Model):
     name = models.CharField(max_length=40)
     #game = models.IntegerField(default=0)
     game = models.ForeignKey(Game, null=True, on_delete=models.CASCADE)
-    skipLeftRound = models.IntegerField(default=0)
+    skip_left_round = models.IntegerField(default=0)
     credits = models.IntegerField(default=100)
     current_cell = models.IntegerField(default=0)
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
     is_ready = models.BooleanField(default=False)
     next_available_move = models.CharField(default="roll", max_length=20)
     artifact_count = models.IntegerField(default=0)
+    cycle_count = models.IntegerField(default=0)
     
     @staticmethod
     def getPlayerById(player_id):
@@ -182,10 +247,11 @@ class Cell(models.Model):
 class GameLog(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     message = models.CharField(max_length=100)
-    player = models.ForeignKey(User, null=True, blank=True, on_delete=models.PROTECT)
+    player = models.ForeignKey(Player, null=True, blank=True, on_delete=models.PROTECT)
 
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return "LOG of Game id: {}, Game name: {}".format(self.game.id, self.game.name)
+        return self.player.name + "'s move: " + self.message
+        #return "LOG of Game id: {}, Game name: {}".format(self.game.id, self.game.name)
