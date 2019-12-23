@@ -68,7 +68,7 @@
                 <button value="join" name="join" type="submit" class="btn btn-outline-primary btn-sm">Join</button>
               </form>
             {% endif %}
-            {% if player.game != null %}
+            {% if player.game != null%}
               {% if player.is_ready == False %} 
                 <form action="{% url 'game-ready' player.game.id %}" method="POST" class="post-form">
                   {% csrf_token %}    
@@ -81,7 +81,6 @@
               {% else %}
                 <div class="alert alert-danger" role="alert">You are not the current user!</div>
               {% endif %}
-
               <form action="{% url 'game-next' player.game.id %}" method="POST" class="post-form">
                 {% csrf_token %}              
                 <div class="btn-group" role="group" aria-label="Player Actions">                

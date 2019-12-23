@@ -60,8 +60,10 @@ def changePlayer(player, game):
         if player.id == player_list[pl_index]:
             if pl_index == player_size-1: #new round
                 next_player_id = player_list[0]
+                message = "Round {} ended".format(game.current_round)
+                log = game.addLog(message)
+                game.current_round += 1
                 for p in players:
-                    p.cycle_count += 1
                     p.credits += game.cycle_value # cycle_value default is 0
                     p.save()
             else:
@@ -200,6 +202,8 @@ def pick(request, game_id):
 
     if 'pick' in request.POST:
         if player.next_available_move != "pick":
+            player.next_available_move = "roll"
+            player.save()
             msg = "You are in the " + player.next_available_move +" phase!"
             messages.warning(request, msg)
             return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
@@ -208,6 +212,8 @@ def pick(request, game_id):
         player_cell = game.cell_set.get(cell_index=player.current_cell)
 
         if player_cell.artifact.owned == True:
+            player.next_available_move = "roll"
+            player.save()
             log = game.addLog("Artifact can't be selected, it is already owned" , player)
             changePlayer(player, game)            
             return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
@@ -237,8 +243,9 @@ def pick(request, game_id):
             
             #FIXME: artifact silmeyi kontrol et
             removed_artifact = player_cell.artifact
-            player_cell.artifact_set.remove(removed_artifact)        
-        
+            player_cell.artifact_set.remove(removed_artifact)
+
+        player.next_available_move = "roll"
         game.save()
         player.save()
         player_cell.save() 
@@ -259,18 +266,3 @@ def pick(request, game_id):
          
     changePlayer(player, game)
     return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
-
-
-
-
-@login_required
-def state(request):
-    """ returns the game state """
-    '''
-    def state(self):
-        cells = self.getGameCells()
-        gameLog = self.getGameLog()
-        players = self.getGamePlayers();
-        return
-    '''
-    pass

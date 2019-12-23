@@ -39,12 +39,6 @@ class Game(models.Model):
     def listGames():
         return Game.objects.filter(game_ended=False)
 
-    def finishGame(self, winner):
-        #self.winner = winner
-        self.game_ended = True
-        self.game_status = "ended"
-        self.save()
-
     def getGameCells(self):
         return self.cell_set.all()
 
@@ -62,6 +56,27 @@ class Game(models.Model):
     def getCurrentPlayer(self):
         current_player = Player.objects.get(pk=self.current_player_id)
         return current_player
+
+    def finishGame(self, winner):
+        #self.winner = winner
+        self.game_ended = True
+        self.game_status = "ended"
+        log = self.addLog("--Game Ended--")
+        self.save()
+
+    def isGameEnded(self,player):
+        if(self.termination_condition == "round"):
+            if player.cycle_count >= self.termination_value:
+                self.finishGame(player)
+        elif(self.termination_condition == "finish"):
+            if player.current_cell >= self.termination_value-1:
+                self.finishGame(player)
+        elif(self.termination_condition == "firstbroke"):
+            if player.credits <= 0:
+                self.finishGame(player)
+        elif(self.termination_condition == "firstcollect"):
+            if player.artifact_count >= self.termination_value:
+                self.finishGame(player)
 
     def takeAction(self, current_player, action):
 
@@ -85,7 +100,9 @@ class Game(models.Model):
 
         
         elif(action_key == "pay"):
-            paid_player = Player.objects.get(pk=action.player_id)
+            players = self.getGamePlayers()
+            paid_player = players[action.player_id] #TODO: id hep kucuk sayilar olmali
+            #paid_player = Player.objects.get(pk=action.player_id)
             paid_player.credits += action_value
             current_player.credits -= action_value            
             paid_player.save()
@@ -123,21 +140,8 @@ class Game(models.Model):
         
         self.isGameEnded(current_player)
 
-        log = self.addLog(message, player = self.getCurrentPlayer())
-        
-    def isGameEnded(self,player):
-        if(self.termination_condition == "round"):
-            if player.cycle_count >= self.termination_value:
-                self.finishGame(player)
-        elif(self.termination_condition == "finish"):
-            if player.current_cell >= self.termination_value-1:
-                self.finishGame(player)
-        elif(self.termination_condition == "firstbroke"):
-            if player.credits <= 0:
-                self.finishGame(player)
-        elif(self.termination_condition == "firstcollect"):
-            if player.artifact_count >= self.termination_value:
-                self.finishGame(player)
+        #log = self.addLog(message, player = self.getCurrentPlayer())
+        log = self.addLog(message)
         
 
 class Player(models.Model):
@@ -237,5 +241,7 @@ class GameLog(models.Model):
     modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.player.name + "'s move: " + self.message
-        #return "LOG of Game id: {}, Game name: {}".format(self.game.id, self.game.name)
+        if self.player == None:            
+            return self.message
+        else:
+            return self.player.name + "'s move: " + self.message
