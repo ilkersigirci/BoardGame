@@ -60,11 +60,15 @@ def changePlayer(player, game):
         if player.id == player_list[pl_index]:
             if pl_index == player_size-1: #new round
                 next_player_id = player_list[0]
+                for p in players:
+                    p.cycle_count += 1
+                    p.credits += game.cycle_value # cycle_value default is 0
+                    p.save()
             else:
                 next_player_id = player_list[pl_index+1]
 
     game.current_player_id = next_player_id
-    player.save()
+    #player.save()
     game.save()
     
 
@@ -126,7 +130,7 @@ def ready(request, game_id):
 
 
 @login_required
-def game_next(request, game_id): #FIXME: round sonunda cycle ekle
+def game_next(request, game_id):
 
     player = User.objects.get(username = request.user).player
     game = player.game
@@ -213,17 +217,20 @@ def pick(request, game_id):
             player_cell.artifact.owned = True        
             player_cell.artifact.player = player
             player_cell.artifact.save()
+            player.credits -= player_cell.artifact.price
             player.artifact_count += 1
 
-            if player_cell.action == None:
-                log = game.addLog("There is no action in the cell" , player)
+            if player_cell.artifact.action == None:
+                log = game.addLog("There is no action in the picked artifact, cell action(if exists) will be done" , player)
+
+                if player_cell.action == None:
+                    log = game.addLog("There is no action in the cell" , player)
+                else:
+                    game.takeAction(player, player_cell.action)
 
             else:
-                game.takeAction(player, player_cell.action)
-                
-                #TODO: gameEnd conditionlari kontrol et
-                if game.game_ended == True:
-                    pass #TODO: gameEnd icinde log yoksa burada yazdir
+                log = game.addLog("Artifact action will be done, instead of cell action" , player)
+                game.takeAction(player, player_cell.artifact.action)
 
         else:
             log = game.addLog("Artifact can't be owned, lack of user credit!" , player)
@@ -243,7 +250,12 @@ def pick(request, game_id):
             return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
 
         #pick = False
-        log = game.addLog("Picked false, no action is taken" , player)
+        log = game.addLog("Picked FALSE, cell action(if exists) will be done" , player)
+
+        if player_cell.action == None:
+            log = game.addLog("There is no action in the cell" , player)
+        else:
+            game.takeAction(player, player_cell.action)
          
     changePlayer(player, game)
     return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))

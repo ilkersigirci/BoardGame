@@ -1,13 +1,22 @@
 {% extends "game/base.html" %}
 {% block content %}
-	<h2>{{ game.name }}</h2>
-	<h4>{{game.game_status}}</h4>
-    <p>Cells</p>
+	<h2>Game Name: {{ game.name }}</h2>
+	<h4>Game Status: {{game.game_status}}</h4>
+    <h5>Cells</h5>
     
     {% if game.getGameCells %}
         <ul class="list-group">
             {% for cell in game.getGameCells %}
                 <li class="list-group-item">{{cell}}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <h5>Players</h5>
+    {% if game.getGamePlayers %}
+        <ul class="list-group">
+            {% for player in game.getGamePlayers %}
+                <li class="list-group-item">{{player}}</li>
             {% endfor %}
         </ul>
     {% endif %}	

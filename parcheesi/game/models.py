@@ -40,7 +40,7 @@ class Game(models.Model):
         return Game.objects.filter(game_ended=False)
 
     def finishGame(self, winner):
-        self.winner = winner
+        #self.winner = winner
         self.game_ended = True
         self.game_status = "ended"
         self.save()
@@ -64,6 +64,10 @@ class Game(models.Model):
         return current_player
 
     def takeAction(self, current_player, action):
+
+        if action == None:
+            return
+
         action_key = action.name.name
         action_value = action.value
         message = "Empty Take Action Message with key: " + action_key + "value: " + str(action_value)
@@ -124,16 +128,16 @@ class Game(models.Model):
     def isGameEnded(self,player):
         if(self.termination_condition == "round"):
             if player.cycle_count >= self.termination_value:
-                finishGame(player)
+                self.finishGame(player)
         elif(self.termination_condition == "finish"):
             if player.current_cell >= self.termination_value-1:
-                finishGame(player)
+                self.finishGame(player)
         elif(self.termination_condition == "firstbroke"):
             if player.credits <= 0:
-                finishGame(player)
+                self.finishGame(player)
         elif(self.termination_condition == "firstcollect"):
             if player.artifact_count >= self.termination_value:
-                finishGame(player)
+                self.finishGame(player)
         
 
 class Player(models.Model):
@@ -153,7 +157,9 @@ class Player(models.Model):
     def getPlayerById(player_id):
         return Player.objects.get(pk=player_id)
     def __str__(self):
-        return self.name
+        player_desp = "PlayerName: {}, Credits: {}, Current_Cell {}, Next_Available_Move: {}, Skip_Left_Round: {}, Artifact_Count: {}, Cycle_Count: {}" \
+                    .format(self.name, self.credits, self.current_cell, self.next_available_move, self.skip_left_round, self.artifact_count, self.cycle_count) 
+        return player_desp
     
 
 class ActionName(models.Model):
@@ -189,9 +195,9 @@ class Artifact(models.Model):
     def __str__(self):
         if self.owned:
             if self.action is None:
-                return "Artifact: {}, with price: {}, owned by {}".format(self.name, self.player, self.price)
+                return "Artifact: {}, with price: {}, owned by {}".format(self.name, self.price, self.player.name)
             else:
-                return "Artifact: {}, with price: {} owned by {}, and has {}".format(self.name, self.player, self.price, self.action)
+                return "Artifact: {}, with price: {} owned by {}, and has {}".format(self.name, self.price, self.player.name, self.action)
         else:
             if self.action is None:
                 return "Artifact: {}, with price: {} not owned".format(self.name, self.price)
@@ -208,17 +214,17 @@ class Cell(models.Model):
     def __str__(self):
         if self.action is None:
             if self.artifact is None:
-                return "Index: {}, desp: {}".format(self.cell_index, self.description)
+                return "Index: {} -- desp: {}".format(self.cell_index, self.description)
             else:
                 return "Index: {}, desp: {}, {}".format(self.cell_index, self.description, self.artifact)    
-            return "Index: {}, desp: {}".format(self.cell_index, self.description)
+            return "Index: {} -- desp: {}".format(self.cell_index, self.description)
         else:
             if self.artifact is None:
-                return "Index: {}, desp: {}, {}".format(self.cell_index, self.description,self.action)
+                return "Index: {} -- desp: {}, {}".format(self.cell_index, self.description,self.action)
             else:
-                return "Index: {}, desp: {}, {}, {}".format(self.cell_index, self.description, self.action, self.artifact)    
-            return "Index: {}, desp: {}".format(self.cell_index, self.description)
-        return "Index: {}, desp: {}".format(self.cell_index, self.description)
+                return "Index: {} -- desp: {} -- {} -- {}".format(self.cell_index, self.description, self.action, self.artifact)    
+            return "Index: {} -- desp: {}".format(self.cell_index, self.description)
+        return "Index: {} -- desp: {}".format(self.cell_index, self.description)
     
 
 
