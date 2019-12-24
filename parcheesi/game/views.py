@@ -28,25 +28,6 @@ def home(request):
 
 
 @login_required
-def detail(request, game_id):
-
-    player = User.objects.get(username = request.user).player
-    game = get_object_or_404(Game, pk = game_id)
-
-    context = {
-        'game': game,
-        'player': player,
-        'title': 'Detail'
-    }
-    return render(request, 'game/detail.html', context)
-
-@login_required
-def about(request):
-    return render(request, 'game/about.html', {'title': 'About'})
-
-#######################################################################################
-
-@login_required
 def changePlayer(player, game):
     players = game.getGamePlayers()
     player_list = []
@@ -73,6 +54,42 @@ def changePlayer(player, game):
     #player.save()
     game.save()
     
+
+
+
+
+def didPlayerBroke(game,player):
+    
+    if player.credits <= 0 and game.termination_condition != "firstbroke":
+        changePlayer(player, game)
+        #game.player_count -= 1
+        #player.delete()
+        return True
+
+    return False
+
+@login_required
+def detail(request, game_id):
+
+    player = User.objects.get(username = request.user).player
+    game = get_object_or_404(Game, pk = game_id)
+    player_brokeness = didPlayerBroke(game, player)
+    context = {
+        'game': game,
+        'player': player,
+        'title': 'Detail',
+        'status': player_brokeness
+    }
+    return render(request, 'game/detail.html', context)
+
+@login_required
+
+@login_required
+def about(request):
+    return render(request, 'game/about.html', {'title': 'About'})
+
+#######################################################################################
+
 
 @login_required
 def join(request, game_id):
@@ -192,7 +209,7 @@ def pick(request, game_id):
     player = User.objects.get(username = request.user).player
     game = player.game #TODO: buraya bakalim tekrardan
     current_player_id = game.current_player_id
-
+    player_cell = game.cell_set.get(cell_index=player.current_cell)
     if current_player_id != player.pk:
         messages.warning(request, f'This is not your turn! Please wait...')
         return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
@@ -209,7 +226,7 @@ def pick(request, game_id):
             return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
         
         #pick = True
-        player_cell = game.cell_set.get(cell_index=player.current_cell)
+       
 
         if player_cell.artifact.owned == True:
             player.next_available_move = "roll"
