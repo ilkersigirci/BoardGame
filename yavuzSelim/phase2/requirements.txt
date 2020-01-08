@@ -1,2 +1,0 @@
-pyparsing==2.3.0
-syslog-rfc5424-parser==0.1.4
