@@ -86,32 +86,34 @@
                 {% endif %}
               {% endif %}
               {% if game.game_status == "playing" and  0 < player.credits %}
-                <form action="{% url 'game-next' player.game.id %}" method="POST" class="post-form">
+              <!-- <form action="{% url 'game-next' player.game.id %}" method="POST" class="post-form">
+                {% csrf_token %}
+              </form> -->
+              <div class="btn-group" role="group" aria-label="Player Actions">                
+                <button id='roll' value="roll" name="roll" type="submit" class="btn btn-outline-primary btn-sm">Roll the Dice</button>
+                <button id='next' value="next" name="next" type="submit" class="btn btn-outline-dark btn-sm">Next</button>
+              </div>
+
+              <div class="btn-group" role="group" aria-label="Player Actions">                
+                <button id='pick' value="true" name="pick" type="submit" class="btn btn-outline-success btn-sm">Pick</button>
+                <button id='no_pick' value="false" name="no_pick" type="submit" class="btn btn-outline-danger btn-sm"  >Don't Pick</button>
+              </div>
+
+              <!-- <form action="{% url 'game-pick' player.game.id %}" method="POST" class="post-form">
                 {% csrf_token %}              
-                <div class="btn-group" role="group" aria-label="Player Actions">                
-                  <button value="roll" name="roll" type="submit" class="btn btn-outline-primary btn-sm">Roll the Dice</button>
-                  <button value="next" name="next" type="submit" class="btn btn-outline-dark btn-sm">Next</button>
-                </div>
-              </form>
-              <form action="{% url 'game-pick' player.game.id %}" method="POST" class="post-form">
-                {% csrf_token %}              
-                <div class="btn-group" role="group" aria-label="Player Actions">                
-                  <button value="true" name="pick" type="submit" class="btn btn-outline-success btn-sm">Pick</button>
-                  <button value="false" name="no_pick" type="submit" class="btn btn-outline-danger btn-sm"  >Don't Pick</button>
-                </div>
-              </form>
+              </form> -->
               {% else %}
               {% endif %}
               
               <ul class="list-group">
                 {% if game.game_status == "playing" and game.getGameLog%}
-                <ul class="list-group">
+                <li class="list-group-item list-group-item-light">Game Log</li>
+                <ul id='gameLog' class="list-group">
                     {% for log in game.getGameLog reversed %}
                         <li class="list-group-item-warning">{{log}}</li>
                     {% endfor %}
                 </ul>
                 {% endif %}
-                <li class="list-group-item list-group-item-light">Game Log</li>
 
               </ul>            
             {% endif %}
@@ -124,8 +126,15 @@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<!--     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+-->    
+    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    {% block script %}
+    {% endblock %}    
 </body>
 </html>

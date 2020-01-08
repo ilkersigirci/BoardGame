@@ -25,12 +25,13 @@ SECRET_KEY = '_6je3oo=_r0w#newzj^u^1zt7@xl6@h--$cgv-mtabo^b)tu*0'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'dbbackup',
     'game.apps.GameConfig',
     'users.apps.UsersConfig',
@@ -71,7 +72,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'parcheesi.wsgi.application'
+ASGI_APPLICATION = 'parcheesi.routing.application'
+#WSGI_APPLICATION = 'parcheesi.wsgi.application'
 
 
 # Database
