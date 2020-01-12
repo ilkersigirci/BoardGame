@@ -26,7 +26,7 @@
 
 {% block script %}
 
-<script>
+<script type="text/javascript">
 
 $(document).ready(function(){
     // alert("jquery world")
@@ -41,28 +41,26 @@ $(document).ready(function(){
     var pickButton = $("#pick")
     var no_pickButton = $("#no_pick")
     var gameLog = $("#gameLog")
+    var nextUrl = rollButton.attr('value')
+    console.log("nextURL:", nextUrl)
+    var pickUrl = pickButton.attr('value')
+    var user_id = "{{request.user.id}}"
     //var messageInput = $("#id_message")
     //var chatItems = $('#chat-items')
 
+    if (socket.readyState == WebSocket.OPEN) {
 
-    socket.onmessage = function(e){
-        //console.log('message', e)
-        var msgData = JSON.parse(e.data)
-        console.log(msgData)
-        // alert(e.data)
-        /* var msgData = JSON.parse(e.data)
-        console.log(msgData)
-        chatItems.append(`<li>${msgData.msg} via ${msgData.user}</li>`) */
+    }
+    else if (socket.readyState == WebSocket.CONNECTING){
+        console.log("connecting..")
     }
 
     socket.onopen = function(e){
-        console.log('open', e)
-
-        rollButton.click(function() {
-            //alert("roll is clicked")
-            var jsonData = JSON.stringify({msg: "OnurVSIlker", user:'ilker'})
-            socket.send(jsonData)
-        });
+        console.log('Onopen', e)
+        socket.send(JSON.stringify({
+            "msg": "socket_open",
+            "user_id": "{{request.user.id}}"
+        }));    
         /* formData.submit(function(event){
             event.preventDefault()
             var messageText = messageInput.val()
@@ -74,17 +72,81 @@ $(document).ready(function(){
     }
 
     socket.onerror = function(e){
-        console.log('error', e)
+        console.log('socket error', e)
     }
     socket.onclose = function(e){
-        console.log('closed', e)
+        console.log('socket closed', e)
     }
+    /**************************************************************************************/
+    rollButton.click(function() {
+        var jsonData = JSON.stringify({msg: "roll button clicked", user:'ilker'})
+        socket.send(jsonData)
+        $.ajax({
+            type: 'POST',
+            url: nextUrl,
+            data: {csrfmiddlewaretoken: window.CSRF_TOKEN, roll: ''},
+            success: function(jsonResponse){
+                //var jsonResponse = data.data;
+                console.log("Roll Success - FrontEnd !");
+                if(jsonResponse["warning"] != ""){
+                    alert(jsonResponse["warning"])
+                }    
+            }
+        })
+    });
+    nextButton.click(function() {
+        var jsonData = JSON.stringify({msg: "next button clicked"})
+        socket.send(jsonData)
+        $.ajax({
+            type: 'POST',
+            url: nextUrl,
+            data: {csrfmiddlewaretoken: window.CSRF_TOKEN, roll: ''},
+            success: function(jsonResponse) {
+                console.log("Next Success - FrontEnd !");
+                if(jsonResponse["warning"] != ""){
+                    alert(jsonResponse["warning"])
+                }
+            }
+        })
+    });
+    pickButton.click(function() {
+        var jsonData = JSON.stringify({msg: "pick button clicked"})
+        socket.send(jsonData)
+        $.ajax({
+            type: 'POST',
+            url: pickUrl,
+            data: {csrfmiddlewaretoken: window.CSRF_TOKEN, roll: ''},
+            success: function(jsonResponse) {
+                console.log("Roll Success - FrontEnd !");
+                if(jsonResponse["warning"] != ""){
+                    alert(jsonResponse["warning"])
+                }
+            }
+        })
+    });
+    no_pickButton.click(function() {
+        var jsonData = JSON.stringify({msg: "no_pick button clicked"})
+        socket.send(jsonData)
+        $.ajax({
+            type: 'POST',
+            url: pickUrl,
+            data: {csrfmiddlewaretoken: window.CSRF_TOKEN, roll: ''},
+            success: function(jsonResponse) {
+                console.log("No_Pick Success - FrontEnd !");
+                if(jsonResponse["warning"] != ""){
+                    alert(jsonResponse["warning"])
+                }
+            }
+        })
+    });
+    
+    socket.onmessage = function(e){
+        console.log('Onmessage', e)
+        var msgData = JSON.parse(e.data)
+        console.log("message: ",msgData)
+        //chatItems.append(`<li>${msgData.msg} via ${msgData.user}</li>`) */
+        //gameLog.append(`<li class="list-group-item-warning">${msgData.gameLog}</li>`)
 
-    if (socket.readyState == WebSocket.OPEN) {
-
-    }
-    else if (socket.readyState == WebSocket.CONNECTING){
-        console.log("connecting..")
     }
 })
 

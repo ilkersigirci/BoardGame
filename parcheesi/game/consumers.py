@@ -35,6 +35,8 @@ class TaskConsumer(AsyncConsumer):
 
 
 class GameConsumer(AsyncConsumer):
+
+	players = {}
 	async def websocket_connect(self, event):
 		# when the socket connects
 		print("connected", event)
@@ -57,10 +59,9 @@ class GameConsumer(AsyncConsumer):
 			"type": "websocket.accept"
 		}) """
 
+	async def websocket_receive(self, event):
 
-	async def websocket_receive(self, event): # websocket.receive
-
-		print("receive", event)
+		print("websocket receive", event)
 
 		message_data = json.loads(event['text'])
 		""" user = self.scope['user']
@@ -77,15 +78,35 @@ class GameConsumer(AsyncConsumer):
 				'message': final_message_data
 			}
 		) """
-		sendMes = message_data['msg'] + " from receive"
+		if(message_data['msg'] == "socket_open"):
+			GameConsumer.players[message_data["user_id"]] = self
+
+		sendMes = message_data['msg'] + " from websocket_receive"
 		sendMes = json.dumps(sendMes)
 		await self.send({
 			"type": "websocket.send",
 			"text": sendMes
 		})
 
-	async def broadcast_message(self, event):
-		await self.send({
+	async def websocket_disconnect(self, event):
+		print("disconnected", event)
+		""" await self.channel_layer.group_discard(
+			self.room_group_name, 
+			self.channel_name
+		) """
+
+	@classmethod
+	def broadcast(cls, msg):
+		print("begin broadcast")
+		for player in GameConsumer.players:
+			print("in broadcast")
+			GameConsumer.players[player].send({
+				"type": "websocket.send",
+				#"text": event['message']
+				#"text": msg
+				"text": json.dumps(msg)
+			})
+		""" await self.send({
 			"type": "websocket.send",
 			"text": json.dumps({'msg': "Loading data please wait...", 'user': 'admin'})
 		})
@@ -93,33 +114,13 @@ class GameConsumer(AsyncConsumer):
 		await self.send({
 			"type": "websocket.send",
 			"text": event['message']
-		})
+		}) """
 
-	async def chat_message(self, event):
-		await self.send({
-			"type": "websocket.send",
-			"text": event['message']
-		})
-
-	async def websocket_disconnect(self, event):
-		# when the socket connects
-		print("disconnected", event)
-		""" await self.channel_layer.group_discard(
-			self.room_group_name, 
-			self.channel_name
-		) """
+	""" @classmethod
+	def send_notification(cls, users, msg):
+		for user in users:
+			SockConsumer.waiters[str(user)].send(text_data=json.dumps(msg))
 
 	@database_sync_to_async
 	def get_name(self):
-		return User.objects.all()[0].username
-
-	@database_sync_to_async
-	def get_thread(self, user, other_username):
-		return Thread.objects.get_or_new(user, other_username)[0]
-
-	@database_sync_to_async
-	def create_chat_message(self, user, message):
-		thread = self.cfe_chat_thread
-		return ChatMessage.objects.create(thread=thread, user=user, message=message)
-
-
+		return User.objects.all()[0].username """

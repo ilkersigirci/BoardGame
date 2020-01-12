@@ -6,6 +6,9 @@ from django.contrib.auth.models import User
 from .models import *
 from django.contrib import messages
 import random
+import json
+from django.http import JsonResponse
+from game.consumers import GameConsumer
 
 
 #######################################################################################
@@ -54,9 +57,6 @@ def changePlayer(player, game):
     #player.save()
     game.save()
     
-
-
-
 
 def didPlayerBroke(game,player):
     
@@ -151,31 +151,42 @@ def ready(request, game_id):
 @login_required
 def game_next(request, game_id):
 
+    print("broadcast oncesi")
+    GameConsumer.broadcast("BroadCast")
+    print("broadcast sonrasi")
+
     player = User.objects.get(username = request.user).player
     game = player.game
     current_player_id = game.current_player_id
 
     if current_player_id != player.pk:
-        messages.warning(request, f'This is not your turn! Please wait...')
-        return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
+        msg = 'This is not your turn! Please wait...'
+        return JsonResponse({"msg":"","gameId": game.id, "warning": msg}) 
+        #messages.warning(request, msg)
+        #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
 
     if request.method != 'POST':
-        return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
-    
+        msg = 'Request type is not POST'
+        return JsonResponse({"msg":"","gameId": game.id, "warning": msg})
+        #messages.warning(request, msg)
+        #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
+
     if(player.skip_left_round != 0):
         log = game.addLog("You can't play in this round, you should wait for " + str(player.skip_left_round) + " to play",player )
         player.skip_left_round -= 1
         player.save()
 
     elif 'roll' in request.POST:
+        print("View Roll Called")
         if player.next_available_move != "roll":
             msg = "You are in the " + player.next_available_move +" phase!"
-            messages.warning(request, msg)
-            return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
-       
+            return JsonResponse({"msg":"","gameId": game.id, "warning": msg})
+            #messages.warning(request, msg)
+            #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
+        
         diceRoll = random.randrange(game.dice) + 1
-        log = game.addLog("Dice rolled" + str(diceRoll),player ) #FIXME: iki kere log basiyor burada
-        actionName = ActionName.objects.get(pk=9) #TODO: jumpR foreign key is 9
+        log = game.addLog("Dice rolled" + str(diceRoll),player )
+        actionName = ActionName.objects.get(pk=9) # jumpR foreign key is 9
         action = Action(name=actionName, value=diceRoll)
         game.takeAction(player, action)
         game.save()
@@ -189,8 +200,10 @@ def game_next(request, game_id):
     elif 'next' in request.POST:
         if player.next_available_move != "next":
             msg = "You are in the " + player.next_available_move +" phase!"
-            messages.warning(request, msg)
-            return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
+            return JsonResponse({"msg":"","gameId": game.id, "warning": msg}) 
+            #messages.warning(request, msg)
+            #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
+        
         player.next_available_move = "roll"
         cell = game.cell_set.get(cell_index=player.current_cell)
         if cell.action is not None:
@@ -200,8 +213,9 @@ def game_next(request, game_id):
             pass
 
         changePlayer(player, game)
-                    
-    return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
+    data = serializers.serialize('xml', game.cell_set.get(cell_index=player.current_cell))
+    return JsonResponse({"msg":"SUCCESS - Game-Next","gameId": game.id, "warning": ""})                
+    #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
 
 @login_required
 def pick(request, game_id):
@@ -211,29 +225,34 @@ def pick(request, game_id):
     current_player_id = game.current_player_id
     player_cell = game.cell_set.get(cell_index=player.current_cell)
     if current_player_id != player.pk:
-        messages.warning(request, f'This is not your turn! Please wait...')
-        return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
+        msg = 'This is not your turn! Please wait...'
+        #messages.warning(request, msg)
+        #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
+        return JsonResponse({"msg":"","gameId": game.id, "warning": msg}) 
     
     if request.method != 'POST':
-        return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
+        msg = 'Request type is not POST'
+        return JsonResponse({"msg":"","gameId": game.id, "warning": msg})
+        #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
 
     if 'pick' in request.POST:
         if player.next_available_move != "pick":
             player.next_available_move = "roll"
             player.save()
             msg = "You are in the " + player.next_available_move +" phase!"
-            messages.warning(request, msg)
-            return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
+            return JsonResponse({"msg":"","gameId": game.id, "warning": msg})
+            #messages.warning(request, msg)
+            #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
         
-        #pick = True
-       
+        #pick = True       
 
         if player_cell.artifact.owned == True:
             player.next_available_move = "roll"
             player.save()
             log = game.addLog("Artifact can't be selected, it is already owned" , player)
-            changePlayer(player, game)            
-            return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
+            changePlayer(player, game)
+            return JsonResponse({"msg":"","gameId": game.id, "warning": ""})            
+            #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
             
         if(player_cell.artifact.price >= 0 and player.credits >= player_cell.artifact.price):
             log = game.addLog("Artifact is successfully owned" , player)
@@ -270,8 +289,9 @@ def pick(request, game_id):
     elif 'no_pick' in request.POST:
         if player.next_available_move != "pick":
             msg = "You are in the " + player.next_available_move +" phase!"
-            messages.warning(request, msg)
-            return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
+            return JsonResponse({"msg":"","gameId": game.id, "warning": msg})
+            #messages.warning(request, msg)
+            #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
 
         #pick = False
         log = game.addLog("Picked FALSE, cell action(if exists) will be done" , player)
@@ -282,4 +302,5 @@ def pick(request, game_id):
             game.takeAction(player, player_cell.action)
          
     changePlayer(player, game)
-    return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
+    return JsonResponse({"msg":"SUCCESS - Game-Pick","gameId": game.id, "warning": ""})
+    #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
