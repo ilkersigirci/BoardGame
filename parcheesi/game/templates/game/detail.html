@@ -2,22 +2,34 @@
 {% block content %}
 	<h2>Game Name: {{ game.name }}</h2>
 	<h4>Game Status: {{game.game_status}}</h4>
+    <div class="alert alert-success" role="alert" style="display: none;" id='turn'>You are the current user!</div>
+    <div class="alert alert-danger" role="alert" style="display: none;" id='notTurn'>You are not the current user!</div>
+    <div class="alert alert-danger" role="alert"style="display: none;" id='broke'>You are broke! However, you can continue to watch the game :)</div>
     <h5>Cells</h5>
-    
+    <table border="1">
+
+    </table>
+    </body>
     {% if game.getGameCells %}
-        <ul class="list-group">
-            {% for cell in game.getGameCells %}
-                <li class="list-group-item">{{cell}}</li>
-            {% endfor %}
+        <ul class="list-group" id="cells">
+            {% comment "" %}
+                {% for cell in game.getGameCells %}
+                    <li class="list-group-item">{{cell}}</li>
+                {% endfor %}
+            {% endcomment %}
+            
         </ul>
     {% endif %}
 
     <h5>Players</h5>
     {% if game.getGamePlayers %}
-        <ul class="list-group">
-            {% for player in game.getGamePlayers %}
+        <ul class="list-group" id="players">
+            {% comment "" %}
+                {% for player in game.getGamePlayers %}
                 <li class="list-group-item">{{player}}</li>
             {% endfor %}
+            {% endcomment %}
+            
         </ul>
     {% endif %}	
 	
@@ -41,16 +53,51 @@ $(document).ready(function(){
     var pickButton = $("#pick")
     var no_pickButton = $("#no_pick")
     var gameLog = $("#gameLog")
+    var cells = $("#cells")
+    var players = $("#players")
+    var notify = $("#notify")
     var nextUrl = rollButton.attr('value')
     console.log("nextURL:", nextUrl)
     var pickUrl = pickButton.attr('value')
     var user_id = "{{request.user.id}}"
-
+    var username = "{{request.user.username}}"
+    console.log("username:", username)
     if (socket.readyState == WebSocket.OPEN) {
 
     }
     else if (socket.readyState == WebSocket.CONNECTING){
         console.log("connecting..")
+    }
+    function generateTableHead(table, cellData, playerData) {
+        let thead = table.createTHead();
+        let row = thead.insertRow();
+        
+        let th = document.createElement("th");
+        let text = document.createTextNode("Cells");
+        th.appendChild(text);
+        row.appendChild(th);
+        for (let key of playerData) {
+            let th = document.createElement("th");
+            let text = document.createTextNode(key);
+            th.appendChild(text);
+            row.appendChild(th);
+        }
+    }
+    function generateTable(table, cellData,playerData,playerCellData) {
+        for (element in cellData) {
+            let row = table.insertRow();
+            let cell = row.insertCell();
+            let text = document.createTextNode(cellData[element]);
+            cell.appendChild(text);
+            for (key in playerData) {
+              let cell = row.insertCell();
+              let text = document.createTextNode("");
+              if(playerCellData[key] == element){
+                  cell.style.backgroundColor = "yellow";
+              }
+              cell.appendChild(text);
+            }
+        }
     }
 
     socket.onopen = function(e){
@@ -76,8 +123,9 @@ $(document).ready(function(){
         console.log('socket closed', e)
     }
     /**************************************************************************************/
+    
     rollButton.click(function() {
-        var jsonData = JSON.stringify({msg: "roll button clicked", user:'ilker'})
+        var jsonData = JSON.stringify({msg: "roll button clicked", user:user_id})
         socket.send(jsonData)
         $.ajax({
             type: 'POST',
@@ -87,7 +135,12 @@ $(document).ready(function(){
                 //var jsonResponse = data.data;
                 console.log("Roll Success - FrontEnd !");
                 if(jsonResponse["warning"] != ""){
-                    alert(jsonResponse["warning"])
+                    notify.empty()
+                    //$("notify").update(jsonResponse["warning"]);
+                    document.getElementById("notify").innerHTML =  jsonResponse["warning"]
+                    document.getElementById("notify").style.display = "block"
+                    //notify.innerHTML =  jsonResponse["warning"] 
+                    //alert(jsonResponse["warning"])
                 }    
             }
         })
@@ -102,7 +155,11 @@ $(document).ready(function(){
             success: function(jsonResponse) {
                 console.log("Next Success - FrontEnd !");
                 if(jsonResponse["warning"] != ""){
-                    alert(jsonResponse["warning"])
+                    notify.empty()
+                    document.getElementById("notify").innerHTML =  jsonResponse["warning"]
+                    document.getElementById("notify").style.display = "block"
+                    //notify.innerHTML =  jsonResponse["warning"] 
+                    //alert(jsonResponse["warning"])
                 }
             }
         })
@@ -117,7 +174,11 @@ $(document).ready(function(){
             success: function(jsonResponse) {
                 console.log("Roll Success - FrontEnd !");
                 if(jsonResponse["warning"] != ""){
-                    alert(jsonResponse["warning"])
+                    notify.empty()
+                    document.getElementById("notify").innerHTML =  jsonResponse["warning"]
+                    document.getElementById("notify").style.display = "block"
+                    //notify.innerHTML =  jsonResponse["warning"] 
+                    //alert(jsonResponse["warning"])
                 }
             }
         })
@@ -132,7 +193,12 @@ $(document).ready(function(){
             success: function(jsonResponse) {
                 console.log("No_Pick Success - FrontEnd !");
                 if(jsonResponse["warning"] != ""){
-                    alert(jsonResponse["warning"])
+                    notify.empty()
+                    document.getElementById("notify").innerHTML =  jsonResponse["warning"]
+                    document.getElementById("notify").style.display = "block"
+                    
+                    //notify.innerHTML =  jsonResponse["warning"] 
+                    //alert(jsonResponse["warning"])
                 }
             }
         })
@@ -143,16 +209,81 @@ $(document).ready(function(){
         var msgData = JSON.parse(e.data)
 
         //console.log("message: ",msgData['gameLog'])
-        console.log(msgData.gameLog)
-        var obj = msgData.gameLog
-        if( obj == null || obj == undefined) return;
-        
-        gameLog.empty()
-        for (let i = 0; i < obj.length; i++) { // FIXME: Allah icin iterate et su objeyi            
-            //console.log(obj[i]["fields"])
-            console.log(obj[i].fields.message) // Bu kod browser console'da calisiyor ve sirayla gameLoglari donuyor
-            //gameLog.append(`<li class="list-group-item-warning">${obj[i].fields.message}</li>`)
+        //console.log(msgData.gameLog)
+        try {
+            var gameLogObj = JSON.parse(msgData.gameLog)
+            var gameCellsDesc = JSON.parse(msgData.cellsDesc)
+            var gamePlayers = JSON.parse(msgData.players)
+            var currentPlayer = JSON.parse(msgData.players)
+            var credit = JSON.parse(msgData.credit)
+            console.log(gameCellsDesc.cells[0])
+            console.log(gameLogObj)
+
+            let table = document.querySelector("table");
+            let cellData = gameCellsDesc["cellNames"];
+            let playerData = gamePlayers["playerNames"];
+            let playerCellData = gamePlayers["playerCellNos"];
+
+            generateTableHead(table, cellData,playerData);
+            generateTable(table, cellData,playerData,playerCellData);
+
+
+
+
+            if( gameLogObj != null && gameLogObj != undefined){
+                gameLog.empty()
+                console.log(gameLogObj.length)
+                for (let i = 0; i < gameLogObj.length; i++) { // FIXME: Allah icin iterate et su objeyi            
+                    //console.log(obj[i]["fields"])
+                    //console.log(obj[i].fields.message) // Bu kod browser console'da calisiyor ve sirayla gameLoglari donuyor
+                    gameLog.append(`<li class="list-group-item-warning">${gameLogObj[i].fields.message}</li>`)
+                }
+            }
+            if( gameCellsDesc != null && gameCellsDesc != undefined){
+                cells.empty()
+                console.log(gameCellsDesc.cells.length)
+                for (let i = 0; i < gameCellsDesc.cells.length; i++) { // FIXME: Allah icin iterate et su objeyi            
+                    //console.log(gameCellsDesc[i]["fields"]["description"])
+                    //console.log(obj[i].fields.message) // Bu kod browser console'da calisiyor ve sirayla gameLoglari donuyor
+                    cells.append(`<li class="list-group-item">${gameCellsDesc.cells[i]}</li>`)
+                }
+            }
+            if( gamePlayers != null && gamePlayers != undefined){
+                players.empty()
+                //console.log(gameCellsDesc.cells.length)
+                for (let i = 0; i < gamePlayers.players.length; i++) { // FIXME: Allah icin iterate et su objeyi            
+                    //console.log(gameCellsDesc[i]["fields"]["description"])
+                    //console.log(obj[i].fields.message) // Bu kod browser console'da calisiyor ve sirayla gameLoglari donuyor
+                    players.append(`<li class="list-group-item">${gamePlayers.players[i]}</li>`)
+                }
+            }
+            if(currentPlayer != null && currentPlayer != undefined){
+                if(parseInt(credit["credit"]) <= 0 ){
+                    document.getElementById("notTurn").style.display = "none"
+                    document.getElementById("turn").style.display = "none"
+                    document.getElementById("broke").style.display = "block"
+                }
+                if(currentPlayer["currentPlayer"] == username){
+                    document.getElementById("notTurn").style.display = "block"
+                    document.getElementById("turn").style.display = "block"
+                    document.getElementById("broke").style.display = "none"
+                }
+                else {
+                    document.getElementById("turn").style.display = "none"
+                    document.getElementById("notTurn").style.display = "block"
+                    document.getElementById("broke").style.display = "none"
+
+                } 
+            }
         }
+        catch(err){
+            console.log(err) // TODO: daha guzel bi handle bulunabilir
+        }
+        
+        
+        
+        
+        
         //gameLog.append(`<li class="list-group-item-warning">${msgData.gameLog}</li>`)
         //gameLog.prepend(`<li class="list-group-item-warning">${msgData}</li>`)
 

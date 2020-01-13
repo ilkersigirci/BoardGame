@@ -75,8 +75,11 @@
                   <button value="ready" name="ready" type="submit" class="btn btn-outline-primary btn-sm">Ready</button>
                 </form>
               {% endif %}
-              <h3>Player Actions</h3>
-              {% if game.game_status == "playing" and game.getCurrentPlayer.name == player.name %}
+              <h3 >Player Actions</h3>
+                <div class="alert alert-warning" role="alert" style="display: none;" id='notify'>
+                </div>
+              {% comment "" %}
+                {% if game.game_status == "playing" and game.getCurrentPlayer.name == player.name %}
                 <div class="alert alert-success" role="alert">You are the current user!</div>
               {% else %}
                 {% if game.game_status == "playing" and  0 >= player.credits %}
@@ -85,6 +88,8 @@
                   <div class="alert alert-danger" role="alert">You are not the current user!</div>
                 {% endif %}
               {% endif %}
+              {% endcomment %}
+              
               {% if game.game_status == "playing" and  0 < player.credits %}
               <!-- <form action="{% url 'game-next' player.game.id %}" method="POST" class="post-form">
                 {% csrf_token %}
@@ -109,9 +114,12 @@
                 {% if game.game_status == "playing" and game.getGameLog%}
                 <li class="list-group-item list-group-item-light">Game Log</li>
                 <ul id='gameLog' class="list-group">
+                    {% comment "" %}
                     {% for log in game.getGameLog reversed %}
                         <li class="list-group-item-warning">{{log}}</li>
                     {% endfor %}
+                    {% endcomment %}
+                    
                 </ul>
                 {% endif %}
 

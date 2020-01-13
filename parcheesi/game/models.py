@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 import random
 from game.consumers import GameConsumer
 from django.core import serializers
+import json
 
 class Game(models.Model):
     name = models.CharField(max_length=50)
@@ -82,12 +83,36 @@ class Game(models.Model):
     def broadCastGame(self): #TODO: field lar degisebilir
 
         #game_Serilized = serializers.serialize('json', self, fields=('name','game_status','player_count'))
-        cells_Serialized = serializers.serialize('json', self.getGameCells(),fields=('description'))
+        cells_Serialized ={"cells":[],"cellNames":[]}
+        players_Serialized ={"players":[],"playerNames":[],"playerCellNos":[]} 
+        curentPlayer_Serialized ={"currentPlayer":""}
+        credit_Serialized ={"credit":""}
+        #serializers.serialize('json', self.getGameCells(),fields=('description'))
         gameLog_Serialized = serializers.serialize('json', self.getGameLog(),fields=('message'))
-
+        
+        cells = self.getGameCells()
+        players = self.getGamePlayers()
+        currentPlayer = self.getCurrentPlayer()
+        credit_Serialized["credit"] = str(currentPlayer.credits)
+        curentPlayer_Serialized["currentPlayer"] = str(currentPlayer.name)
+        #user = Player.objects.get(name = currentPlayer.name).user
+        #print(user.username)
+        print(currentPlayer.name)
+        for player in players:
+            players_Serialized["players"].append(str(player))
+            players_Serialized["playerNames"].append(player.name)
+            players_Serialized["playerCellNos"].append(player.current_cell)
+        players = serializers.serialize('json',self.getGamePlayers())
+        for cell in cells:
+            cells_Serialized["cells"].append(str(cell))
+            cells_Serialized["cellNames"].append(cell.description)
+        #cells_Serialized = serializers.serialize('json', cells_Serialized)
         message = {#'game': game_Serilized,
-                   'cells': cells_Serialized,
-                   'gameLog': gameLog_Serialized
+                   'cellsDesc': json.dumps(cells_Serialized),
+                   'players': json.dumps(players_Serialized),
+                   'gameLog': gameLog_Serialized,
+                   'currentPlayer': json.dumps(curentPlayer_Serialized),
+                   'credit': json.dumps(credit_Serialized)
                     }
 
         GameConsumer.broadcast(message)

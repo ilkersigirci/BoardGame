@@ -121,6 +121,7 @@ def about(request):
 
 @login_required
 def join(request, game_id):
+
     player = User.objects.get(username = request.user).player
     game = player.game
     if request.method != 'POST' or 'join' not in request.POST:
@@ -141,7 +142,7 @@ def join(request, game_id):
     game.player_count += 1
     player.save()
     game.save()
-
+    game.broadCastGame()
     messages.success(request, f'You are successfully joined the game')    
     return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
 
@@ -182,7 +183,7 @@ def game_next(request, game_id):
     player = User.objects.get(username = request.user).player
     game = player.game
     current_player_id = game.current_player_id
-
+    print(request.user.pk)
     gameLog_Serialized = serializers.serialize('json', game.getGameLog(),fields=('message'))
     #gameLog_Serialized = json.loads(gameLog_Serialized)
     #print("serialized gamelog", json.dumps(gameLog_Serialized))
