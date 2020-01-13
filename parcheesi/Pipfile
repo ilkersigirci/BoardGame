@@ -21,5 +21,7 @@ redis = "==2.10.6"
 asgiref = "<2.4"
 daphne = "<2.3"
 channels = "<2.2"
+djangorestframework = "*"
+
 [requires]
 python_version = "*"

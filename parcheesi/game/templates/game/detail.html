@@ -29,7 +29,7 @@
 <script type="text/javascript">
 
 $(document).ready(function(){
-    // alert("jquery world")
+
     var loc = window.location
     var wsStart = "ws://"
     if (loc.protocol == "https:"){ wsStart = "wss://"}
@@ -45,8 +45,6 @@ $(document).ready(function(){
     console.log("nextURL:", nextUrl)
     var pickUrl = pickButton.attr('value')
     var user_id = "{{request.user.id}}"
-    //var messageInput = $("#id_message")
-    //var chatItems = $('#chat-items')
 
     if (socket.readyState == WebSocket.OPEN) {
 
@@ -141,11 +139,22 @@ $(document).ready(function(){
     });
     
     socket.onmessage = function(e){
-        console.log('Onmessage', e)
+        //console.log('Onmessage', e)
         var msgData = JSON.parse(e.data)
-        console.log("message: ",msgData)
-        //chatItems.append(`<li>${msgData.msg} via ${msgData.user}</li>`) */
+
+        //console.log("message: ",msgData['gameLog'])
+        console.log(msgData.gameLog)
+        var obj = msgData.gameLog
+        if( obj == null || obj == undefined) return;
+        
+        gameLog.empty()
+        for (let i = 0; i < obj.length; i++) { // FIXME: Allah icin iterate et su objeyi            
+            //console.log(obj[i]["fields"])
+            console.log(obj[i].fields.message) // Bu kod browser console'da calisiyor ve sirayla gameLoglari donuyor
+            //gameLog.append(`<li class="list-group-item-warning">${obj[i].fields.message}</li>`)
+        }
         //gameLog.append(`<li class="list-group-item-warning">${msgData.gameLog}</li>`)
+        //gameLog.prepend(`<li class="list-group-item-warning">${msgData}</li>`)
 
     }
 })

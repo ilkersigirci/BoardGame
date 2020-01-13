@@ -4,7 +4,7 @@ from channels.routing import ProtocolTypeRouter, URLRouter, ChannelNameRouter
 from channels.auth import AuthMiddlewareStack
 from channels.security.websocket import AllowedHostsOriginValidator, OriginValidator
 
-from game.consumers import GameConsumer, TaskConsumer
+from game.consumers import GameConsumer
 application = ProtocolTypeRouter({
     # Empty for now
     'websocket': AllowedHostsOriginValidator(
@@ -24,7 +24,7 @@ application = ProtocolTypeRouter({
         ),
     ),
     # burasi degismesi lazim
-    'channel': ChannelNameRouter({
-        'task': TaskConsumer
-    })
+    #'channel': ChannelNameRouter({
+    #    'task': TaskConsumer
+    #})
 })

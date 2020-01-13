@@ -2,6 +2,8 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 import random
+from game.consumers import GameConsumer
+from django.core import serializers
 
 class Game(models.Model):
     name = models.CharField(max_length=50)
@@ -34,7 +36,6 @@ class Game(models.Model):
         except Game.DoesNotExist:
             print("Requested game doesn't exist")
     
-
     @staticmethod
     def listGames():
         return Game.objects.filter(game_ended=False)
@@ -77,6 +78,19 @@ class Game(models.Model):
         elif(self.termination_condition == "firstcollect"):
             if player.artifact_count >= self.termination_value:
                 self.finishGame(player)
+    
+    def broadCastGame(self): #TODO: field lar degisebilir
+
+        #game_Serilized = serializers.serialize('json', self, fields=('name','game_status','player_count'))
+        cells_Serialized = serializers.serialize('json', self.getGameCells(),fields=('description'))
+        gameLog_Serialized = serializers.serialize('json', self.getGameLog(),fields=('message'))
+
+        message = {#'game': game_Serilized,
+                   'cells': cells_Serialized,
+                   'gameLog': gameLog_Serialized
+                    }
+
+        GameConsumer.broadcast(message)
 
     def takeAction(self, current_player, action):
 
@@ -143,7 +157,6 @@ class Game(models.Model):
         #log = self.addLog(message, player = self.getCurrentPlayer())
         log = self.addLog(message)
         
-
 class Player(models.Model):
     name = models.CharField(max_length=40)
     #game = models.IntegerField(default=0)
@@ -165,7 +178,6 @@ class Player(models.Model):
                     .format(self.name, self.credits, self.current_cell, self.next_available_move, self.skip_left_round, self.artifact_count, self.cycle_count) 
         return player_desp
     
-
 class ActionName(models.Model):
     name = models.CharField(max_length=20)
     
@@ -182,13 +194,13 @@ class Action(models.Model):
             return "Action: {} to the player {}, with value: {}".format(self.name, self.value, self.player_id)
         else:
             return "Action: {}, with value : {}".format(self.name, self.value)     
+
 class Card(models.Model):
     action = models.ForeignKey(Action, on_delete=models.CASCADE)
 
     def __str__(self):
         return "The card {} has the Action: {}, with value : {}".format(self.pk, self.action.name, self.action.value) 
-    
-    
+
 class Artifact(models.Model):
     name = models.CharField(max_length=20)
     owned = models.BooleanField(default=False)
@@ -229,8 +241,6 @@ class Cell(models.Model):
                 return "Index: {} -- desp: {} -- {} -- {}".format(self.cell_index, self.description, self.action, self.artifact)    
             return "Index: {} -- desp: {}".format(self.cell_index, self.description)
         return "Index: {} -- desp: {}".format(self.cell_index, self.description)
-    
-
 
 class GameLog(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)

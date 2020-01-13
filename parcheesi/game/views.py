@@ -9,6 +9,34 @@ import random
 import json
 from django.http import JsonResponse
 from game.consumers import GameConsumer
+from asgiref.sync import async_to_sync
+#from rest_framework import serializers
+from django.core import serializers
+
+
+######################################################################################
+
+#FIXME: gerek olmayabilir
+
+""" class GameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Game
+        fields = ('id', 'winner', 'creator', 'opponent', 'cols', 
+                  'rows', 'completed', 'created', 'current_turn')
+        depth = 1
+
+
+class CellSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GameSquare
+        fields = ('id', 'game', 'owner', 'status', 'row', 'col')
+
+
+class GameLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GameLog
+        fields = ('id', 'text', 'player', 'created')
+        depth = 1 """
 
 
 #######################################################################################
@@ -151,22 +179,26 @@ def ready(request, game_id):
 @login_required
 def game_next(request, game_id):
 
-    print("broadcast oncesi")
-    GameConsumer.broadcast("BroadCast")
-    print("broadcast sonrasi")
-
     player = User.objects.get(username = request.user).player
     game = player.game
     current_player_id = game.current_player_id
 
+    gameLog_Serialized = serializers.serialize('json', game.getGameLog(),fields=('message'))
+    #gameLog_Serialized = json.loads(gameLog_Serialized)
+    #print("serialized gamelog", json.dumps(gameLog_Serialized))
+
+    #GameConsumer.broadcast(gameLog_Serialized)
+
     if current_player_id != player.pk:
         msg = 'This is not your turn! Please wait...'
+        game.broadCastGame()
         return JsonResponse({"msg":"","gameId": game.id, "warning": msg}) 
         #messages.warning(request, msg)
         #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
 
     if request.method != 'POST':
         msg = 'Request type is not POST'
+        game.broadCastGame()
         return JsonResponse({"msg":"","gameId": game.id, "warning": msg})
         #messages.warning(request, msg)
         #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
@@ -180,6 +212,7 @@ def game_next(request, game_id):
         print("View Roll Called")
         if player.next_available_move != "roll":
             msg = "You are in the " + player.next_available_move +" phase!"
+            game.broadCastGame()
             return JsonResponse({"msg":"","gameId": game.id, "warning": msg})
             #messages.warning(request, msg)
             #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
@@ -200,6 +233,7 @@ def game_next(request, game_id):
     elif 'next' in request.POST:
         if player.next_available_move != "next":
             msg = "You are in the " + player.next_available_move +" phase!"
+            game.broadCastGame()
             return JsonResponse({"msg":"","gameId": game.id, "warning": msg}) 
             #messages.warning(request, msg)
             #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
@@ -213,7 +247,13 @@ def game_next(request, game_id):
             pass
 
         changePlayer(player, game)
-    data = serializers.serialize('xml', game.cell_set.get(cell_index=player.current_cell))
+    
+    #gameLog_Serialized = serializers.serialize('xml', game.getGameLog())
+    #print("serialized gamelog", gameLog_Serialized)
+    #async_to_sync(GameConsumer.broadcast("BroadCast"))
+    #GameConsumer.broadcast(gameLog_Serialized)
+    
+    game.broadCastGame()
     return JsonResponse({"msg":"SUCCESS - Game-Next","gameId": game.id, "warning": ""})                
     #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
 
@@ -228,10 +268,12 @@ def pick(request, game_id):
         msg = 'This is not your turn! Please wait...'
         #messages.warning(request, msg)
         #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
+        game.broadCastGame()
         return JsonResponse({"msg":"","gameId": game.id, "warning": msg}) 
     
     if request.method != 'POST':
         msg = 'Request type is not POST'
+        game.broadCastGame()
         return JsonResponse({"msg":"","gameId": game.id, "warning": msg})
         #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
 
@@ -240,6 +282,7 @@ def pick(request, game_id):
             player.next_available_move = "roll"
             player.save()
             msg = "You are in the " + player.next_available_move +" phase!"
+            game.broadCastGame()
             return JsonResponse({"msg":"","gameId": game.id, "warning": msg})
             #messages.warning(request, msg)
             #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
@@ -251,6 +294,7 @@ def pick(request, game_id):
             player.save()
             log = game.addLog("Artifact can't be selected, it is already owned" , player)
             changePlayer(player, game)
+            game.broadCastGame()
             return JsonResponse({"msg":"","gameId": game.id, "warning": ""})            
             #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
             
@@ -289,6 +333,7 @@ def pick(request, game_id):
     elif 'no_pick' in request.POST:
         if player.next_available_move != "pick":
             msg = "You are in the " + player.next_available_move +" phase!"
+            game.broadCastGame()
             return JsonResponse({"msg":"","gameId": game.id, "warning": msg})
             #messages.warning(request, msg)
             #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
@@ -302,5 +347,6 @@ def pick(request, game_id):
             game.takeAction(player, player_cell.action)
          
     changePlayer(player, game)
+    game.broadCastGame()
     return JsonResponse({"msg":"SUCCESS - Game-Pick","gameId": game.id, "warning": ""})
     #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
