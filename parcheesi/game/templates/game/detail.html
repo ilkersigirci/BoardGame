@@ -68,25 +68,28 @@ $(document).ready(function(){
     else if (socket.readyState == WebSocket.CONNECTING){
         console.log("connecting..")
     }
-    function generateTableHead(table, cellData, playerData) {
+    function generateTableHead(table, cellData, playerData,playerDescData) {
         let thead = table.createTHead();
         let row = thead.insertRow();
         
         let th = document.createElement("th");
         let text = document.createTextNode("Cells");
+
         th.appendChild(text);
         row.appendChild(th);
-        for (let key of playerData) {
+        for (let key in playerData) {
             let th = document.createElement("th");
-            let text = document.createTextNode(key);
+            let text = document.createTextNode(playerData[key]);
+            th.title = playerDescData[key];
             th.appendChild(text);
             row.appendChild(th);
         }
     }
-    function generateTable(table, cellData,playerData,playerCellData) {
+    function generateTable(table, cellData,playerData,playerCellData,cellDescData) {
         for (element in cellData) {
             let row = table.insertRow();
             let cell = row.insertCell();
+            cell.title = cellDescData[element];
             let text = document.createTextNode(cellData[element]);
             cell.appendChild(text);
             for (key in playerData) {
@@ -94,6 +97,7 @@ $(document).ready(function(){
               let text = document.createTextNode("");
               if(playerCellData[key] == element){
                   cell.style.backgroundColor = "yellow";
+                  
               }
               cell.appendChild(text);
             }
@@ -221,11 +225,13 @@ $(document).ready(function(){
 
             let table = document.querySelector("table");
             let cellData = gameCellsDesc["cellNames"];
+            let cellDescData = gameCellsDesc["cells"];
             let playerData = gamePlayers["playerNames"];
             let playerCellData = gamePlayers["playerCellNos"];
+            let playerDescData = gamePlayers["players"];
 
-            generateTableHead(table, cellData,playerData);
-            generateTable(table, cellData,playerData,playerCellData);
+            generateTableHead(table, cellData,playerData,playerDescData);
+            generateTable(table, cellData,playerData,playerCellData,cellDescData);
 
 
 
