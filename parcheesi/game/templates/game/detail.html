@@ -6,9 +6,12 @@
     <div class="alert alert-danger" role="alert" style="display: none;" id='notTurn'>You are not the current user!</div>
     <div class="alert alert-danger" role="alert"style="display: none;" id='broke'>You are broke! However, you can continue to watch the game :)</div>
     <h5>Cells</h5>
-    <table border="1">
+    <div id="table">
+        <table border="1">
 
-    </table>
+        </table>
+    </div>
+    
     </body>
     {% if game.getGameCells %}
         <ul class="list-group" id="cells">
@@ -218,18 +221,18 @@ $(document).ready(function(){
             var gameLogObj = JSON.parse(msgData.gameLog)
             var gameCellsDesc = JSON.parse(msgData.cellsDesc)
             var gamePlayers = JSON.parse(msgData.players)
-            var currentPlayer = JSON.parse(msgData.players)
+            var currentPlayer = JSON.parse(msgData.currentPlayer)
             var credit = JSON.parse(msgData.credit)
             console.log(gameCellsDesc.cells[0])
             console.log(gameLogObj)
-
+            document.getElementById("table").innerHTML = "<table border=\"1\"></table>"
             let table = document.querySelector("table");
             let cellData = gameCellsDesc["cellNames"];
             let cellDescData = gameCellsDesc["cells"];
             let playerData = gamePlayers["playerNames"];
             let playerCellData = gamePlayers["playerCellNos"];
             let playerDescData = gamePlayers["players"];
-
+            //table.empty();
             generateTableHead(table, cellData,playerData,playerDescData);
             generateTable(table, cellData,playerData,playerCellData,cellDescData);
 
@@ -263,6 +266,8 @@ $(document).ready(function(){
                     players.append(`<li class="list-group-item">${gamePlayers.players[i]}</li>`)
                 }
             }
+            console.log(currentPlayer["currentPlayer"])
+            console.log(username)
             if(currentPlayer != null && currentPlayer != undefined){
                 if(parseInt(credit["credit"]) <= 0 ){
                     document.getElementById("notTurn").style.display = "none"
@@ -270,7 +275,7 @@ $(document).ready(function(){
                     document.getElementById("broke").style.display = "block"
                 }
                 if(currentPlayer["currentPlayer"] == username){
-                    document.getElementById("notTurn").style.display = "block"
+                    document.getElementById("notTurn").style.display = "none"
                     document.getElementById("turn").style.display = "block"
                     document.getElementById("broke").style.display = "none"
                 }

@@ -142,7 +142,7 @@ def join(request, game_id):
     game.player_count += 1
     player.save()
     game.save()
-    game.broadCastGame()
+    
     messages.success(request, f'You are successfully joined the game')    
     return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
 
@@ -217,7 +217,7 @@ def game_next(request, game_id):
             return JsonResponse({"msg":"","gameId": game.id, "warning": msg})
             #messages.warning(request, msg)
             #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
-        
+        game.broadCastGame()
         diceRoll = random.randrange(game.dice) + 1
         log = game.addLog("Dice rolled" + str(diceRoll),player )
         actionName = ActionName.objects.get(pk=9) # jumpR foreign key is 9
@@ -238,7 +238,7 @@ def game_next(request, game_id):
             return JsonResponse({"msg":"","gameId": game.id, "warning": msg}) 
             #messages.warning(request, msg)
             #return HttpResponseRedirect(reverse('game-detail', args=(game.id,)))
-        
+        game.broadCastGame()
         player.next_available_move = "roll"
         cell = game.cell_set.get(cell_index=player.current_cell)
         if cell.action is not None:
